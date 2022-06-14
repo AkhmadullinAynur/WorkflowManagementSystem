@@ -10,7 +10,6 @@ namespace WorkflowManagementSystem.Data
 {
     public class User
     {
-
         [BsonIgnoreIfDefault]
         ObjectId _id;
         public User(string name, string surName, string profession, string email, string phoneNumber, string password, bool active)
@@ -89,6 +88,18 @@ namespace WorkflowManagementSystem.Data
 
         public User()
         {
+        }
+        public User(string profession)
+        {
+            Profession = profession;
+        }
+        public static List<User> GetListOfProfessions()
+        {
+            List<User> listToReturn = new List<User>();
+            listToReturn.Add(new User("Проектировщик"));
+            listToReturn.Add(new User("Инженер"));
+            listToReturn.Add(new User("Кладовщик"));
+            return listToReturn;
         }
     }
 }

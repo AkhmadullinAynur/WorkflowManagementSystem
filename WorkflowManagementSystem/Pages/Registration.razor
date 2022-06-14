@@ -9,7 +9,15 @@
         <tr>
             <td><input class="form-control" placeholder="Login" @bind-value="@Login" /></td>
             <td><input class="form-control" placeholder="Surname" @bind-value="@Surname" /></td>
-            <td><input class="form-control" placeholder="Profession" @bind-value="@Profession" /></td>
+            <td>
+                <select class="form-control" @onchange="SelectionProfession">
+                    <option class="text-center" value="-1>\">Выбрать должность</option>
+                    @foreach (var item in professions)
+                    {
+                        <option value="@item.Profession">@item.Profession</option>
+                    }
+                </select>
+            </td>
             <td><input class="form-control" placeholder="E-mail" @bind-value="@Email" /></td>
             <td><input class="form-control" placeholder="Phone Number" @bind-value="@PhoneNumber" /></td>
             <td>
@@ -39,7 +47,15 @@
         <tr>
             <td><input class="form-control" placeholder="Login" @bind-value="Login" /></td>
             <td><input class="form-control" placeholder="Surname" @bind-value="Surname" /></td>
-            <td><input class="form-control" placeholder="Profession" @bind-value="Profession" /></td>
+            <td>
+                <select class="form-control" @onchange="SelectionProfession">
+                    <option class="text-center" value="-1>\">Выбрать должность</option>
+                    @foreach (var item in professions)
+                    {
+                        <option value="@item.Profession">@item.Profession</option>
+                    }
+                </select>
+            </td>
             <td><input class="form-control" placeholder="E-mail" @bind-value="Email" /></td>
             <td><input class="form-control" placeholder="Phone Number" @bind-value="PhoneNumber" /></td>
             <td>
@@ -70,26 +86,31 @@
                 </tr>
             </thead>
         </table>
-        <EditForm Model="user1" OnValidSubmit="NewRegistration" class="table table-responsive-md">
+        <EditForm Model="user" OnInvalidSubmit="NewRegistration" OnValidSubmit="NewRegistration" class="table table-responsive-md">
             <DataAnnotationsValidator />
             <label></label>
-            <ValidationMessage For="()=>user1.Name" />
-            <InputText class="form-control" placeholder="Введите имя" @bind-Value="user1.Name" />
+            <ValidationMessage For="()=>user.Name" />
+            <InputText class="form-control" placeholder="Введите имя" @bind-Value="user.Name" />
             <label></label>
-            <ValidationMessage For="()=>user1.SurName" />
-            <InputText class="form-control" placeholder="Введите фамилию" @bind-Value="user1.SurName" />
+            <ValidationMessage For="()=>user.SurName" />
+            <InputText class="form-control" placeholder="Введите фамилию" @bind-Value="user.SurName" />
             <label></label>
-            <ValidationMessage For="()=>user1.Profession" />
-            <InputText class="form-control" placeholder="Введите должность" @bind-Value="user1.Profession" />
+            <InputSelect class="form-control" @bind-Value="user.Profession">
+                <option class="text-center" value="-1>\">Выбрать должность</option>
+                @foreach (var item in professions)
+                    {
+                    <option value="@item.Profession">@item.Profession</option>
+                    }
+            </InputSelect>
             <label></label>
-            <ValidationMessage For="()=>user1.Email" />
-            <InputText class="form-control" placeholder="Введите электронную почту" @bind-Value="user1.Email" />
+            <ValidationMessage For="()=>user.Email" />
+            <InputText class="form-control" placeholder="Введите электронную почту" @bind-Value="user.Email" />
             <label></label>
-            <ValidationMessage For="()=>user1.PhoneNumber" />
-            <InputText class="form-control" placeholder="Введите номер телефона" @bind-Value="user1.PhoneNumber" />
+            <ValidationMessage For="()=>user.PhoneNumber" />
+            <InputText class="form-control" placeholder="Введите номер телефона" @bind-Value="user.PhoneNumber" />
             <label></label>
-            <ValidationMessage For="()=>user1.Password" />
-            <InputText type="password" class="form-control" placeholder="Введите пароль" @bind-Value="user1.Password" />
+            <ValidationMessage For="()=>user.Password" />
+            <InputText type="password" class="form-control" placeholder="Введите пароль" @bind-Value="user.Password" />
             <label></label>
             <table class="table table-responsive-md">
                 <tfoot class="table-primary">
@@ -118,7 +139,7 @@
 }
 
 @code {
-    User user1 = new User();
+    User user = new User();
 
     private string _login;
     private string _surName;
@@ -142,14 +163,16 @@
     private bool _isNotComplete;
 
     public List<User> users { get; set; }
+    List<User> professions = User.GetListOfProfessions();
+
     private void NewRegistration()
     {
         _isComplete = true;
         _isNotComplete = false;
-        MongoDataBase.AddUser(new User(_login, _surName, _profession, _email, _phoneNumber, _password));
-        //MongoDataBase.AddUser(new User(Login, Surname, Profession, Email, PhoneNumber, _password));
+        MongoDataBase.AddUser(new User(user.Name, user.SurName, user.Profession, user.Email, user.PhoneNumber, user.Password));
         OnInitialized();
     }
+
     private void AdminRegistered()
     {
         bool active = true;
@@ -162,6 +185,7 @@
             _isComplete = true;
             _isNotComplete = false;
             MongoDataBase.AddUser(new User(Login, Surname, Profession, Email, PhoneNumber, Login, active));
+            _adminRegistartion = false;
         }
         OnInitialized();
     }
@@ -191,5 +215,8 @@
             _buffer = item.Password;
         }
     }
-
+    private void SelectionProfession(ChangeEventArgs args)
+    {
+        Profession = args.Value.ToString();
+    }
 }
