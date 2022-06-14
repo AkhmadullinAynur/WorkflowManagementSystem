@@ -1,0 +1,195 @@
+﻿@page "/registration"
+@inject UserService userService
+@inject NavigationManager navigate
+
+@if (_edit)
+{
+    <THeadComponent AdminEdit="true" Login="@Login" Surname="@Surname"></THeadComponent>
+    <tbody class="table-primary">
+        <tr>
+            <td><input class="form-control" placeholder="Login" @bind-value="@Login" /></td>
+            <td><input class="form-control" placeholder="Surname" @bind-value="@Surname" /></td>
+            <td><input class="form-control" placeholder="Profession" @bind-value="@Profession" /></td>
+            <td><input class="form-control" placeholder="E-mail" @bind-value="@Email" /></td>
+            <td><input class="form-control" placeholder="Phone Number" @bind-value="@PhoneNumber" /></td>
+            <td>
+                <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
+            </td>
+        </tr>
+        @if (_isComplete)
+        {
+            <tr>
+                <td colspan="6" class="alert-success text-center font-weight-bolder"><h2>Изменения успешно внесены!</h2></td>
+            </tr>
+        }
+        @if (_isNotComplete)
+        {
+            <tr>
+                <td colspan="6" class="alert-danger"><h3 class=" text-center font-weight-bolder">Недостаточно данных! Пожалуйста, введите все данные</h3></td>
+            </tr>
+        }
+    </tbody>
+}
+@if (_adminRegistartion)
+{
+    <tbody class="table-primary">
+        <tr>
+            <td colspan="6"><h3 class="table table-responsive-md text-center font-weight-bolder">Добавление нового пользователя</h3></td>
+        </tr>
+        <tr>
+            <td><input class="form-control" placeholder="Login" @bind-value="Login" /></td>
+            <td><input class="form-control" placeholder="Surname" @bind-value="Surname" /></td>
+            <td><input class="form-control" placeholder="Profession" @bind-value="Profession" /></td>
+            <td><input class="form-control" placeholder="E-mail" @bind-value="Email" /></td>
+            <td><input class="form-control" placeholder="Phone Number" @bind-value="PhoneNumber" /></td>
+            <td>
+                <button class="btn btn-primary" @onclick="AdminRegistered">Добавить пользователя</button>
+            </td>
+        </tr>
+        @if (_isComplete)
+        {
+            <tr>
+                <td colspan="6" class="alert-success text-center font-weight-bolder"><h2>Новый пользователь добавлен в базу данных!</h2></td>
+            </tr>
+        }
+        @if (_isNotComplete)
+        {
+            <tr>
+                <td colspan="6" class="alert-danger"><h3 class=" text-center font-weight-bolder">Недостаточно данных! Пожалуйста, введите все данные</h3></td>
+            </tr>
+        }
+    </tbody>
+}
+@if (!_Registartion)
+{
+    <div class="row col-md-6 offset-md-3">
+        <table class="table table-striped">
+            <thead class="table-primary text-center">
+                <tr>
+                    <th><h2 class="font-weight-bolder">Registration</h2></th>
+                </tr>
+            </thead>
+        </table>
+        <EditForm Model="user1" OnValidSubmit="NewRegistration" class="table table-responsive-md">
+            <DataAnnotationsValidator />
+            <label></label>
+            <ValidationMessage For="()=>user1.Name" />
+            <InputText class="form-control" placeholder="Введите имя" @bind-Value="user1.Name" />
+            <label></label>
+            <ValidationMessage For="()=>user1.SurName" />
+            <InputText class="form-control" placeholder="Введите фамилию" @bind-Value="user1.SurName" />
+            <label></label>
+            <ValidationMessage For="()=>user1.Profession" />
+            <InputText class="form-control" placeholder="Введите должность" @bind-Value="user1.Profession" />
+            <label></label>
+            <ValidationMessage For="()=>user1.Email" />
+            <InputText class="form-control" placeholder="Введите электронную почту" @bind-Value="user1.Email" />
+            <label></label>
+            <ValidationMessage For="()=>user1.PhoneNumber" />
+            <InputText class="form-control" placeholder="Введите номер телефона" @bind-Value="user1.PhoneNumber" />
+            <label></label>
+            <ValidationMessage For="()=>user1.Password" />
+            <InputText type="password" class="form-control" placeholder="Введите пароль" @bind-Value="user1.Password" />
+            <label></label>
+            <table class="table table-responsive-md">
+                <tfoot class="table-primary">
+                    @if (_isNotComplete)
+                    {
+                        <tr>
+                            <td class="alert-danger"><h2>Пожалуйста введите все данные!</h2></td>
+                        </tr>
+                    }
+                    @if (_isComplete)
+                    {
+                        <tr>
+                            <td class="alert-success"><h2>Вы успешно зарегестрировались! Пожалуйста, дождитесь подтверждения вашего аккаунта и авторизуйтесь.</h2></td>
+                        </tr>
+                    }
+                    <tr>
+                        <th>
+                            <button class="btn btn-primary">Зарегестрироваться</button>
+                            <button class="btn btn-primary" @onclick="()=>navigate.NavigateTo(inHome)">Авторизоваться</button>
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </EditForm>
+    </div>
+}
+
+@code {
+    User user1 = new User();
+
+    private string _login;
+    private string _surName;
+    private string _profession;
+    private string _email;
+    private string _phoneNumber;
+    private string _password;
+    private string _buffer;
+    string inHome = "/";
+
+    [Parameter] public string Login { get; set; }
+    [Parameter] public string Surname { get; set; }
+    [Parameter] public string Profession { get; set; }
+    [Parameter] public string Email { get; set; }
+    [Parameter] public string PhoneNumber { get; set; }
+    [Parameter] public bool _edit { get; set; }
+    [Parameter] public bool _adminRegistartion { get; set; }
+    [Parameter] public bool _Registartion { get; set; }
+
+    private bool _isComplete;
+    private bool _isNotComplete;
+
+    public List<User> users { get; set; }
+    private void NewRegistration()
+    {
+        _isComplete = true;
+        _isNotComplete = false;
+        MongoDataBase.AddUser(new User(_login, _surName, _profession, _email, _phoneNumber, _password));
+        //MongoDataBase.AddUser(new User(Login, Surname, Profession, Email, PhoneNumber, _password));
+        OnInitialized();
+    }
+    private void AdminRegistered()
+    {
+        bool active = true;
+        if (Login == null || Surname == null || Email == null || PhoneNumber == null)
+        {
+            _isNotComplete = true;
+        }
+        else
+        {
+            _isComplete = true;
+            _isNotComplete = false;
+            MongoDataBase.AddUser(new User(Login, Surname, Profession, Email, PhoneNumber, Login, active));
+        }
+        OnInitialized();
+    }
+
+    private void EditUser()
+    {
+        bool active = true;
+        if (Login == "" || Surname == "" || Email == "" || PhoneNumber == "")
+        {
+            _isNotComplete = true;
+        }
+        else
+        {
+            MongoDataBase.ReplaceUser(_buffer, new User(Login, Surname, Profession, Email, PhoneNumber, _buffer, active));
+            _isComplete = true;
+            _isNotComplete = false;
+            userService.listOfUsers = MongoDataBase.GetUserList();
+        }
+        OnInitialized();
+    }
+
+    protected override void OnInitialized()
+    {
+        users = MongoDataBase.FindUser(Login);
+        foreach (var item in users)
+        {
+            _buffer = item.Password;
+        }
+    }
+
+}

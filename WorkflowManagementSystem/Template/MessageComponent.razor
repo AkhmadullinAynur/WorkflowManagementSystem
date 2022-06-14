@@ -1,0 +1,61 @@
+﻿@*PLANNER*@
+@if (false)
+{
+    <tr>
+        <td colspan="6"><h4 class="table table-responsive-md font-weight-bolder">Редактирование проекта</h4></td>
+    </tr>
+}
+@*WAREHOUSEMAN*@
+@if (NewAddComponent)
+{
+    <tr>
+        <td colspan="6"><h4 class="table table-responsive-md font-weight-bolder">Редактирование нового товара:</h4></td>
+    </tr>
+}
+
+@if (TypeEdit)
+{
+    <tr>
+        <td colspan="6"><h4 class="table table-responsive-md font-weight-bolder">Редактирование категории товаров:</h4></td>
+    </tr>
+}
+
+@if (ProductEdit)
+{
+    <tr>
+        <td colspan="6"><h3 class=" text-center font-weight-bolder">Редактирование товара. Наименование товара: @ProductName, Артикль: @ProductArticle</h3></td>
+    </tr>
+}
+
+@if (AddComponentComplete)
+{
+    <tr>
+        <td colspan="6" class="alert-success"><h3 class=" text-center font-weight-bolder">Новый продукт добавлена в базу данных!</h3></td>
+    </tr>
+}
+
+@if (NewTypeComplete)
+{
+    <tr>
+        <td colspan="6" class="alert-success"><h3 class=" text-center font-weight-bolder">Новая категория внесена!</h3></td>
+    </tr>
+}
+
+@if (EditComplete)
+{
+    <tr>
+        <td colspan="6" class="alert-success"><h3 class=" text-center font-weight-bolder">Изменения внесены успешно!</h3></td>
+    </tr>
+}
+
+@code {
+    [Parameter] public bool NewAddComponent { get; set; }
+    [Parameter] public bool TypeEdit { get; set; }
+    [Parameter] public bool ProductEdit { get; set; }
+    [Parameter] public bool AddComponentComplete { get; set; }
+    [Parameter] public bool NewTypeComplete { get; set; }
+    [Parameter] public bool EditComplete { get; set; }
+
+    [Parameter] public string ProductName { get; set; }
+    [Parameter] public int ProductArticle { get; set; }
+}

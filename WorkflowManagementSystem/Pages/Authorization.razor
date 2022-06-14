@@ -1,0 +1,123 @@
+﻿@page "/"
+@inject NavigationManager navigate
+
+@if (!_authorizationIsActive)
+{
+    <div class="col-md-6 offset-md-3">
+        <table class="table table-responsive-md">
+            <thead class="table-primary text-center">
+                <tr>
+                    <th><h2 class="font-weight-bolder">Authorization</h2></th>
+                </tr>
+            </thead>
+        </table>
+        <EditForm Model="client" OnValidSubmit="AuthorizationNow" class="table table-responsive-md">
+            <DataAnnotationsValidator />
+            <label>Имя пользователя:</label>
+            <ValidationMessage For="()=>client.Name" />
+            <InputText class="form-control" placeholder="Введите логин" @bind-Value="client.Name" />
+            <label>Пароль:</label>
+            <ValidationMessage For="()=>client.Password" />
+            <InputText type="password" class="form-control" placeholder="Введите пароль" @bind-Value="client.Password" />
+            <label></label>
+            <table class="table table-responsive-md">
+                <tfoot class="table-primary">
+                    @if (_isNotComplete)
+                    {
+                        <tr>
+                            <td class="alert-danger"><h2>Неверный логин или пароль!</h2></td>
+                        </tr>
+                    }
+                    @if (_notActive)
+                    {
+                        <tr>
+                            <td class="alert-warning"><h2>Ваш аккаунт проходит проверку на подлинность. Пожалуйста, повторите попытку позже.</h2></td>
+                        </tr>
+                    }
+                    <tr>
+                        <th>
+                            <button class="btn btn-primary">Авторизоваться</button>
+                            <button class="btn btn-primary" @onclick="()=>navigate.NavigateTo(inReg)">Регистрация нового пользователя</button>
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </EditForm>
+    </div>
+}
+else
+{
+    if (_active)
+    {
+        @if (_profession == "Planner")
+        {
+            <Planner></Planner>
+        }
+        @if (_profession == "Engineer")
+        {
+            <Engineer Login="@client.Name"></Engineer>
+        }
+        @if (_profession == "Warehouseman")
+        {
+            <Warehouseman></Warehouseman>
+        }
+    }
+}
+
+
+@code {
+    Client client = new Client();
+
+    string inReg = "/registration";
+
+    private bool _authorizationIsActive;
+
+    private bool _isNotComplete;
+    private bool _adminMode;
+    private bool _active;
+    private bool _notActive;
+
+    private static string _login;
+    private static string _password;
+    private static string _profession;
+
+    private void AuthorizationNow()
+    {
+        if (client.Name == "Admin" && client.Password == "admin")
+        {
+            navigate.NavigateTo("/admin");
+        }
+        else
+        if (client.Name == MongoDataBase.FindUserName(client.Name) && client.Password == MongoDataBase.FindUserPassword(client.Password))
+        {
+
+            var user = MongoDataBase.FindUser(client.Name);
+            foreach (var item in user)
+            {
+                _active = item.Active;
+            }
+            if (_active)
+            {
+                _login = client.Name;
+                _profession = MongoDataBase.FindUserProfession(client.Name);
+                _isNotComplete = false;
+                _authorizationIsActive = !_authorizationIsActive;
+            }
+            else
+            {
+                _notActive = !_notActive;
+            }
+        }
+        else
+        {
+            _isNotComplete = true;
+        }
+    }
+
+    private void IsNotComplete()
+    {
+        _isNotComplete = true;
+    }
+
+
+}

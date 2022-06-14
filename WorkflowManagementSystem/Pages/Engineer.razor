@@ -1,0 +1,151 @@
+﻿@page "/engineer"
+@inject Project project
+
+<div class="row border border-dark modal-body">
+    <table class="table table-responsive-md text-center">
+        <THeadComponent PerformerOfWorksNull="true"></THeadComponent>
+        <tbody>
+            <TemplateTable Items="project.projects">
+                <ItemTemplate Context="item">
+                    @if (item.PerformerOfWorks == null)
+                    {
+                        <td>@item.NumberProject</td>
+                        <td>@item.NameProject</td>
+                        <td>
+                            <select class="form-control">
+                                <option class="text-center" value="-1>\">Перечень работ</option>
+                                @foreach (var item in item.TaskList)
+                                {
+                                    <option value="@item.NameTask">@item.NameTask</option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control">
+                                <option class="text-center" value="-1>\">Список комплектующих</option>
+                                @foreach (var item in item.ComponentList)
+                                {
+                                    <option value="@item.Name">@item.Name</option>
+                                }
+                            </select>
+                        </td>
+                        @if ((@item.StartDate).ToString() == "01.01.0001 0:00:00")
+                        {
+                            <td>----------------------</td>
+                        }
+                        else
+                        {
+                            <td>@item.StartDate</td>
+                        }
+                        @if ((@item.CompletionDate).ToString() == "01.01.0001 0:00:00")
+                        {
+                            <td>----------------------</td>
+                        }
+                        else
+                        {
+                            <td>@item.CompletionDate</td>
+                        }
+                        @if (@item.IsDone == true)
+                        {
+                            <td>Сборка завершена.</td>
+                        }
+                        else
+                        {
+                            <td>Сборка началась.</td>
+                        }
+                        <td>
+                            <button @onclick="()=>StartBuild(item.NumberProject)">Приступить к сборке</button>
+                        </td>
+                    }
+                </ItemTemplate>
+            </TemplateTable>
+        </tbody>
+        @if (true)
+        {
+            <THeadComponent PerformerOfWorks="true"></THeadComponent>
+            <tbody>
+                <TemplateTable Items="project.projects">
+                    <ItemTemplate Context="item">
+                        @if (item.PerformerOfWorks == Login)
+                        {
+                            <td>@item.NumberProject</td>
+                            <td>@item.NameProject</td>
+                            <td>
+                                <select class="form-control">
+                                    <option class="text-center" value="-1>\">Перечень работ</option>
+                                    @foreach (var item in item.TaskList)
+                                    {
+                                        <option value="@item.NameTask">@item.NameTask</option>
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control">
+                                    <option class="text-center" value="-1>\">Список комплектующих</option>
+                                    @foreach (var item in item.ComponentList)
+                                    {
+                                        <option value="@item.Name">@item.Name</option>
+                                    }
+                                </select>
+                            </td>
+                            @if ((@item.StartDate).ToString() == "01.01.0001 0:00:00")
+                            {
+                                <td>----------------------</td>
+                            }
+                            else
+                            {
+                                <td>@item.StartDate</td>
+                            }
+                            @if ((@item.CompletionDate).ToString() == "01.01.0001 0:00:00")
+                            {
+                                <td>----------------------</td>
+                            }
+                            else
+                            {
+                                <td>@item.CompletionDate</td>
+                            }
+                            @if (@item.IsDone == true)
+                            {
+                                <td>Сборка завершена.</td>
+                            }
+                            else
+                            {
+                                <td>Сборка началась.</td>
+                            }
+                            <td>
+                                <button @onclick="()=>FinishBuild(item.NumberProject)">Завершить сборку</button>
+                            </td>
+                        }
+                    </ItemTemplate>
+                </TemplateTable>
+            </tbody>
+        }
+    </table>
+</div>
+
+
+@code {
+    private bool _performerOfWork;
+    private bool _isNewProjectActive;
+    private bool _isNewProject;
+    [Parameter] public string Login { get; set; }
+    DateTime dateTime = DateTime.Now;
+
+    protected override void OnInitialized()
+    {
+        project.projects = MongoDataBase.GetProjectList();
+    }
+
+    private void StartBuild(int number)
+    {
+        MongoDataBase.PerformerOfWork(number, Login);
+        MongoDataBase.StartDate(number, dateTime);
+        OnInitialized();
+    }
+    private void FinishBuild(int number)
+    {
+        MongoDataBase.FinishBuild(number, true);
+        MongoDataBase.FinishDate(number, dateTime);
+        OnInitialized();
+    }
+}

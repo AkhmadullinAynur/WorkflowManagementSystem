@@ -1,0 +1,123 @@
+﻿@page "/admin"
+<div class="row border border-dark modal-body">
+    <table class="table table-responsive-md">
+        <THeadComponent Admin="true"></THeadComponent>
+        <tbody class="border-bottom border-dark">
+            <TemplateTable Items="userService.listOfUsers">
+                <ItemTemplate Context="item">
+                    @if (item.Active == true)
+                    {
+                        <td class="border-right">@item.Name</td>
+                        <td class="border-right">@item.SurName</td>
+                        <td class="border-right">@item.Profession</td>
+                        <td class="border-right">@item.Email</td>
+                        <td class="border-right">@item.PhoneNumber</td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="()=>DeleteUser((item.Name).ToString())">Удалить</button>
+                            <button class="btn btn-primary" @onclick="()=>isEditActiv((item.Name).ToString())">Изменить</button>
+                        </td>
+                    }
+                </ItemTemplate>
+            </TemplateTable>
+        </tbody>
+        <tr><td colspan="6" class="table-primary text-center"><h3 class="table table-responsive-md font-weight-bolder">Неактивированные пользователи:</h3></td></tr>
+        <tbody>
+            <TemplateTable Items="userService.listOfUsers">
+                <ItemTemplate Context="item">
+                    @if (item.Active == false)
+                    {
+                        <td class="border-right">@item.Name</td>
+                        <td class="border-right">@item.SurName</td>
+                        <td class="border-right">@item.Profession</td>
+                        <td class="border-right">@item.Email</td>
+                        <td class="border-right">@item.PhoneNumber</td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="()=>DeleteUser((item.Name).ToString())">Удалить</button>
+                            <button class="btn btn-primary" @onclick="()=>ActivateUser((item.Name).ToString())">Активировать профиль</button>
+                        </td>
+                    }
+                </ItemTemplate>
+            </TemplateTable>
+        </tbody>
+    </table>
+    <table class="table table-responsive-md">
+        @if (_isEditActiv)
+        {
+            @foreach (var item in users)
+            {
+                <Registration _edit="@true" _Registartion="true" Login="@item.Name" Surname="@item.SurName" Profession="@item.Profession" Email="@item.Email" PhoneNumber="@item.PhoneNumber"></Registration>
+
+            }
+        }
+        @if (_newRegistartion)
+        {
+            <Registration _adminRegistartion="true" _Registartion="true"></Registration>
+        }
+        <tfoot class="table-primary">
+            <tr>
+                <td colspan="6">
+                    @if (!_newRegistartion && !_isEditActiv)
+                    {
+                        <button class="btn btn-primary" @onclick="RegistrationActive">Добавить нового пользователя</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary" @onclick="CloseAll">Завершить редактирование</button>
+                    }
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+@code {
+    [Inject] UserService userService { get; set; }
+
+    public List<User> users { get; set; }
+
+    protected override void OnInitialized()
+    {
+        userService.listOfUsers = MongoDataBase.GetUserList();
+    }
+
+    private bool _newRegistartion;
+    private bool _isEditActiv;
+
+    private void RegistrationActive()
+    {
+        _newRegistartion = !_newRegistartion;
+        OnInitialized();
+    }
+    private void CloseAll()
+    {
+        _newRegistartion = false;
+        _isEditActiv = false;
+        OnInitialized();
+    }
+    private void DeleteUser(string user)
+    {
+        MongoDataBase.DeleteUser(user);
+        OnInitialized();
+    }
+
+    private void ActivateUser(string user)
+    {
+        bool active = true;
+        users = MongoDataBase.FindUser(user);
+        foreach (var item in users)
+        {
+            string buffer = item.Password;
+            MongoDataBase.ReplaceUser(buffer, new User(item.Name, item.SurName, item.Profession, item.Email, item.PhoneNumber, buffer, active));
+        }
+        OnInitialized();
+    }
+
+    private void isEditActiv(string user)
+    {
+        _isEditActiv = true;
+        _newRegistartion = false;
+        users = MongoDataBase.FindUser(user);
+    }
+
+
+}

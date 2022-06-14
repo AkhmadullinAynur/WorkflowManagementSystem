@@ -1,0 +1,173 @@
+﻿@if (EditProject)
+{
+    <thead class="table-primary text-center">
+        <tr>
+            <td colspan="8"><h4 class="table table-responsive-md font-weight-bolder">Редактирование проекта № @Number</h4></td>
+        </tr>
+        <tr>
+            <th>№ проекта</th>
+            <th>Наименование проекта</th>
+            <th>Перечень видов работ</th>
+            <th>Перечень необходимых комплектующих</th>
+            <th>Количество</th>
+            <th colspan="3"></th>
+        </tr>
+    </thead>
+}
+@if (NewProject)
+{
+    <thead class="table-primary text-center">
+        <tr>
+            <td colspan="8"><h4 class="table table-responsive-md font-weight-bolder">Редактирование нового проекта № @Number</h4></td>
+        </tr>
+        <tr>
+            <th>№ проекта</th>
+            <th>Наименование проекта</th>
+            <th>Перечень видов работ</th>
+            <th>Перечень необходимых комплектующих</th>
+            <th>Количество</th>
+            <th colspan="3"></th>
+        </tr>
+    </thead>
+}
+@if (PerformerOfWorksNull)
+{
+    <thead class="table-primary text-center">
+        <tr>
+            <td colspan="8"><h4 class="table table-responsive-md font-weight-bolder">Список проектов:</h4></td>
+        </tr>
+        <tr>
+            <th>№ проекта</th>
+            <th>Наименование проекта</th>
+            <th>Перечень видов работ</th>
+            <th>Перечень необходимых комплектующих</th>
+            <th>Дата начала работ</th>
+            <th>Дата окончания работ</th>
+            <th>Статус готовности</th>
+            <th></th>
+        </tr>
+    </thead>
+}
+@if (PerformerOfWorks)
+{
+    <thead class="table-primary text-center">
+        <tr>
+            <td colspan="8"><h4 class="table table-responsive-md font-weight-bolder">Список ваших задач:</h4></td>
+        </tr>
+        <tr>
+            <th>№ проекта</th>
+            <th>Наименование проекта</th>
+            <th>Перечень видов работ</th>
+            <th>Перечень необходимых комплектующих</th>
+            <th>Дата начала работ</th>
+            <th>Дата окончания работ</th>
+            <th>Статус готовности</th>
+            <th></th>
+        </tr>
+    </thead>
+}
+@if (Admin)
+{
+    <thead class="table-primary">
+        <tr><td colspan="6" class="table-primary text-center"><h3 class="table table-responsive-md font-weight-bolder">Aктивированные пользователи:</h3></td></tr>
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Profession</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th></th>
+        </tr>
+    </thead>
+}
+@if (AdminEdit)
+{
+    <thead class="table-primary">
+        <tr><td colspan="6" class="table-primary text-center"><h3 class="table table-responsive-md text-center font-weight-bolder">Редактирование профиля:  @Login @Surname</h3></td></tr>
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Profession</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th></th>
+        </tr>
+    </thead>
+}
+
+@if (Planner)
+{
+    <thead class="table-primary">
+        <tr>
+            <th>№ проекта</th>
+            <th>Наименование проекта</th>
+            <th>Перечень видов работ</th>
+            <th>Перечень необходимых комплектующих</th>
+            <th>Исполнитель</th>
+            <th>Статус готовности</th>
+            <th>Дата и время</th>
+            <th></th>
+        </tr>
+    </thead>
+}
+@if (PlannerPanel)
+{
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+}
+
+@if (Warehouseman)
+{
+    <thead class="table-primary">
+        <tr>
+            <th>Наименование товара</th>
+            <th>Категория товара</th>
+            <th>Производитель</th>
+            <th>Артикул</th>
+            <th>Количество на складе</th>
+            <th></th>
+        </tr>
+    </thead>
+}
+@if (WarehousemanPanel)
+{
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+}
+
+@code {
+    [Parameter] public bool EditProject { get; set; }
+    [Parameter] public bool NewProject { get; set; }
+
+    [Parameter] public bool PerformerOfWorksNull { get; set; }
+    [Parameter] public bool PerformerOfWorks { get; set; }
+
+    [Parameter] public bool Admin { get; set; }
+    [Parameter] public bool AdminEdit { get; set; }
+    [Parameter] public bool Planner { get; set; }
+    [Parameter] public bool PlannerPanel { get; set; }
+    [Parameter] public bool Warehouseman { get; set; }
+    [Parameter] public bool WarehousemanPanel { get; set; }
+
+    [Parameter] public int Number { get; set; }
+    [Parameter] public string Login { get; set; }
+    [Parameter] public string Surname { get; set; }
+}

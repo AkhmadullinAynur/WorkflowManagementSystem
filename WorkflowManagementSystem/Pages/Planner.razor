@@ -1,0 +1,626 @@
+﻿@page "/planner"
+<div class="row border border-dark modal-content">
+    <table class="table table-responsive-md text-center">
+        <THeadComponent Planner="true"></THeadComponent>
+        <tbody>
+            <TemplateTable Items="project.projects">
+                <ItemTemplate Context="item">
+                    <td class="border-right">@item.NumberProject</td>
+                    <td class="border-right">@item.NameProject</td>
+                    <td class="border-right">
+                        <select class="form-control">
+                            <option class="text-center" value="-1>\">Перечень работ</option>
+                            @foreach (var item in item.TaskList)
+                            {
+                                <option value="@item.NameTask">@item.NameTask</option>
+                            }
+                        </select>
+                    </td>
+                    <td class="border-right">
+                        <select class="form-control">
+                            <option class="text-center" value="-1>\">Список комплектующих</option>
+                            @foreach (var item in item.ComponentList)
+                            {
+                                <option value="@item.Name">@item.Name</option>
+                            }
+                        </select>
+                    </td>
+                    @if (@item.PerformerOfWorks == null)
+                    {
+                        <td class="border-right">Исполнитель еще не назначен.</td>
+                        <td class="border-right">Сборка не началась.</td>
+                    }
+                    else
+                    {
+                        <td class="border-right">@item.PerformerOfWorks</td>
+                        @if (@item.IsDone == true)
+                        {
+                            <td class="border-right">Сборка завершена.</td>
+                        }
+                        else
+                        {
+                            <td class="border-right">Сборка началась.</td>
+                        }
+                    }
+                    @if (@item.PerformerOfWorks == null)
+                    {
+                        <td class="border-right">----------------------</td>
+                    }
+                    else
+                    {
+                        @if (@item.IsDone == true)
+                        {
+                            <td class="border-right">@item.CompletionDate</td>
+                        }
+                        else
+                        {
+                            <td class="border-right">@item.StartDate</td>
+                        }
+                    }
+                    <td>
+                        <button @onclick="()=>DeleteProject(item.NumberProject)">Удалить</button>
+                        <button @onclick="()=>isEditActiv(item.NumberProject)">Изменить</button>
+                    </td>
+                </ItemTemplate>
+            </TemplateTable>
+            @if (_isRegComplete)
+            {
+                <tr>
+                    <td colspan="8" class="alert-success"><h3 class=" text-center font-weight-bolder">Проект успешно дабавлен в базу данных!</h3></td>
+                </tr>
+            }
+            @if (_isEditComplete)
+            {
+                <tr>
+                    <td colspan="8" class="alert-success"><h3 class=" text-center font-weight-bolder">Изменения успешно внесены в проект!</h3></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <table class="table table-responsive-md text-center">
+
+        @if (_isEditActiv)
+        {
+            <THeadComponent EditProject="true" Number="@_numberProject"></THeadComponent>
+            <tbody>
+                <TemplateTable Items="projects">
+                    <ItemTemplate Context="item">
+                        <td class="border-right">@item.NumberProject</td>
+                        <td class="border-right">@item.NameProject</td>
+                        <td class="border-right text-center">
+                            <label>
+                                @foreach (var item in item.TaskList)
+                                {
+                            <tr><td>@item.NameTask <button @onclick="()=>DeleteTask(item.NameTask)">Удалить</button></td></tr>
+                        }
+                                @foreach (var item in showTaskList)
+                                {
+                                    <tr><td>@item.NameTask <button @onclick="()=>DeleteTask(item.NameTask)">Удалить</button></td></tr>
+                                }
+                                </label>
+                                </td>
+                                <td class="border-right">
+                                    <label>
+                                        @foreach (var item in item.ComponentList)
+                                        {
+                                    <tr><td>@item.Name <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
+                                }
+                                        @foreach (var item in showProdyctList)
+                                        {
+                                            <tr><td>@item.Name <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
+                                        }
+                                        </label>
+                                        </td>
+                                        <td class="border-right">
+                                            <label>
+                                                @foreach (var item in item.ComponentList)
+                                                {
+
+                                            <tr><td>@item.Count</td></tr>
+                                        }
+                                                @foreach (var item in showProdyctList)
+                                                {
+                                                    <tr><td>@item.Count</td></tr>
+                                                }
+                                                </label>
+
+                                                </td>
+                                                <td>
+                                                    <label>
+                                                        @foreach (var item in item.ComponentList)
+                                                        {
+                                                    <tr><td><button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
+                                                }
+
+                                                        @foreach (var item in showProdyctList)
+                                                        {
+                                                            <tr><td><button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
+                                                        }
+                                                        </label>
+                                                        </td>
+                                                    </ItemTemplate>
+                                                </TemplateTable>
+                                            </tbody>
+                                        }
+
+        @if (_isNewProject)
+        {
+            <THeadComponent NewProject="true" Number="@_numberProject"></THeadComponent>
+            <tbody class="text-center">
+                <tr>
+                    <td class="border-right">@_numberProject</td>
+                    <td class="border-right">@_nameProject</td>
+                    <td class="border-right">
+                        <label>
+                            @foreach (var item in newTaskList)
+                            {
+                    <tr><td>@item.NameTask <button @onclick="()=>DeleteTask(item.NameTask)">Удалить</button></td></tr>
+                }
+                            </label>
+                            </td>
+                        <td class="border-right">
+                            <label>
+                                @foreach (var item in newProductList)
+                                {
+                            <tr><td>@item.Name <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
+                        }
+                                </label>
+                                </td>
+                                <td>
+                                    <label>
+                                        @foreach (var item in newProductList)
+                                        {
+                                    <tr><td>@item.Count</td></tr>
+                                }
+                                        </label>
+                                        </td>
+                                        <label>
+                                            @foreach (var item in newProductList)
+                                            {
+                                            <tr><td><button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
+                                        }
+                                            </label>
+                                            </tr>
+                                            </tbody>
+                                        }
+    </table>
+    <table class="table table-responsive-md text-center">
+
+        <tfoot class="table-primary">
+            @if (!_isNewProjectActive)
+            {
+                <tr>
+                    <td align="left">
+                        <button class="btn btn-primary" @onclick="IsNewproject">Создать новый проект</button>
+                    </td>
+                    <td colspan="7"></td>
+                </tr>
+            }
+            @if (_isEditActivPanel || _isNewProject)
+            {
+                <tr>
+                    <td><input class="form-control" placeholder="Номер проекта" @bind-value="_numberProject" /></td>
+                    <td><input class="form-control" placeholder="Название проекта" @bind-value="_nameProject" /></td>
+                    <td>
+                        <select class="form-control" @onchange="SelectionTask">
+                            <option class="text-center" value="-1>\">Перечень работ</option>
+                            @foreach (var item in taskLists)
+                            {
+                                <option>@item.NameTask</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" @onchange="SelectionComponent">
+                            <option class="text-center" value="-1>\">Список комплектующих"</option>
+                            @foreach (var item in productList)
+                            {
+                                <option value="@item.Name">@item.Name</option>
+                            }
+                        </select>
+                    </td>
+                    @if (_isEditActiv)
+                    {
+                        <td>
+                            <button class="btn btn-primary" @onclick="FinishEdit">Сохранить изменения</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                        </td>
+                        <td colspan="2"></td>
+                    }
+                    @if (_isNewProject)
+                    {
+                        <td>
+                            <button class="btn btn-primary" @onclick="AddProjectToDataBase">Добавить проект в базу данных</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                        </td>
+                        <td colspan="2"></td>
+                    }
+                </tr>
+            }
+            @if (_countEditActive)
+            {
+                <tr>
+                    <td colspan="2"></td>
+                    <td><h5 class="table table-responsive-md font-weight-bolder">Название товара: <span style="color: red"> @_nameComponent</span></h5></td>
+                    <td><h5 class="table table-responsive-md font-weight-bolder">Количество на складе: <span style="color: red"> @_buffer</span></h5></td>
+                    <td><button class="btn-primary" @onclick="()=>MinusClick()">-</button>  @_editCount  <button class="btn-primary" @onclick="()=>PlusClick()">+</button></td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="ReplaceCount">Сохранить</button>
+                        <button class="btn btn-primary" @onclick="CancelEditCount">Отмена</button>
+                    </td>
+                    <td colspan="2"></td>
+                </tr>
+            }
+        </tfoot>
+    </table>
+</div>
+
+@code {
+    [Inject] Project project { get; set; }
+
+    List<Project> projects = new List<Project>();
+    List<TaskList> taskLists = MongoDataBase.GetTaskList();
+    List<Product> productList = MongoDataBase.GetProductList();
+    List<TaskList> newTaskList = new List<TaskList>();
+    List<Product> newProductList = new List<Product>();
+    List<TaskList> showTaskList = new List<TaskList>();
+    List<Product> showProdyctList = new List<Product>();
+
+    List<Product> product;
+
+    private int _numberProject;
+    private string _nameProject;
+    private string _taskList;
+    private string _сomponentList;
+    private int _count;
+    private int _editCount;
+    private int _buffer;
+    private DateTime _deadline1;
+    private bool _isDone;
+
+    private string _nameComponent;
+    private int _quantity;
+    private int _article;
+
+    private string _nameTask;
+    private string _componentList;
+
+    public string Value { get; set; }
+
+    private bool _isEditActiv;
+    private bool _isEditActivPanel;
+    private bool _isNewProjectActive;
+    private bool _isNewProject;
+    private bool _isRegComplete;
+    private bool _isEditComplete;
+    private bool _countEditActive;
+
+    private void IsNewproject()
+    {
+        projects = new List<Project>();
+        _numberProject = 99;
+        foreach (var item in project.projects)
+        {
+            _numberProject = item.NumberProject;
+        }
+        int number = _numberProject;
+        for (int i = 100; i <= number + 1; i++)
+        {
+            _numberProject = i;
+        }
+        _isNewProject = !_isNewProject;
+        _isRegComplete = false;
+        _isEditActiv = false;
+        _isEditComplete = false;
+        _isNewProjectActive = !_isNewProjectActive;
+    }
+
+    private void isEditActiv(int number)
+    {
+        Refrash();
+        projects = MongoDataBase.FindProject(number);
+        _isEditActiv = true;
+        _isEditActivPanel = true;
+        _isNewProjectActive = true;
+        _isNewProject = false;
+        _countEditActive = false;
+        OnInitialized();
+    }
+
+    private void countEditActive(int article)
+    {
+        _isEditActivPanel = false;
+        _countEditActive = true;
+        //_isNewProject = false;
+        _isRegComplete = false;
+        _isEditComplete = false;
+        _isNewProjectActive = true;
+        product = MongoDataBase.FindProduct(article);
+        if (_isNewProject)
+        {
+            foreach (var item in product)
+            {
+                _nameComponent = @item.Name;
+                _quantity = @item.Quantity;
+                _article = item.Article;
+            }
+            foreach (var item in newProductList)
+            {
+                _editCount = item.Count;
+                _count = item.Count;
+            }
+        }
+        else
+        {
+            var project = MongoDataBase.GetComponentList(_numberProject);
+            var count = project.Find(x => x.Article == article);
+            _editCount = count.Count;
+            _count = count.Count;
+            foreach (var item in product)
+            {
+                _nameComponent = @item.Name;
+                _quantity = @item.Quantity;
+                _article = item.Article;
+            }
+        }
+        _buffer = _quantity;
+    }
+
+    private void FinishEdit()
+    {
+        _isEditComplete = !_isEditComplete;
+        newProductList = MongoDataBase.GetComponentList(_numberProject);
+        newTaskList = MongoDataBase.GetProjectTaskList(_numberProject);
+        MongoDataBase.ReplaceProject(_numberProject, new Project(_numberProject, _nameProject, newTaskList, newProductList));
+        OnInitialized();
+        Refrash();
+        Cancel();
+    }
+
+    private void Cancel()
+    {
+        Refrash();
+        _isEditActiv = false;
+        _isEditActivPanel = false;
+        _isNewProjectActive = false;
+        _isNewProject = false;
+        _isRegComplete = false;
+        _isEditComplete = false;
+        _countEditActive = false;
+    }
+    private void CancelEditCount()
+    {
+        if (_isNewProject)
+        {
+            _isNewProject = true;
+            _countEditActive = false;
+        }
+        else
+        {
+            _isEditActivPanel = true;
+            _countEditActive = false;
+        }
+    }
+    private void Refrash()
+    {
+        showTaskList = new List<TaskList>();
+        newTaskList = new List<TaskList>();
+        showProdyctList = new List<Product>();
+        newProductList = new List<Product>();
+        _nameProject = string.Empty;
+    }
+
+    protected override void OnInitialized()
+    {
+        project.projects = MongoDataBase.GetProjectList();
+        _isRegComplete = false;
+        _isEditComplete = false;
+        if (projects != null)
+        {
+            foreach (var item in projects)
+            {
+                _numberProject = item.NumberProject;
+                _nameProject = item.NameProject;
+            }
+        }
+
+    }
+
+    private void AddProjectToDataBase()
+    {
+        MongoDataBase.AddProjectToDB(new Project(_numberProject, _nameProject, newTaskList, newProductList));
+        OnInitialized();
+        newTaskList = new List<TaskList>();
+        newProductList = new List<Product>();
+        _isNewProject = !_isNewProject;
+        _isRegComplete = !_isRegComplete;
+        _isNewProjectActive = !_isNewProjectActive;
+        Cancel();
+    }
+
+    private void DeleteProject(int number)
+    {
+        MongoDataBase.DeleteProject(number);
+        Cancel();
+        OnInitialized();
+    }
+
+    private void SelectionTask(ChangeEventArgs args)
+    {
+        if (_isNewProject)
+        {
+            var newBuffTasks = taskLists.Find(x => x.NameTask == args.Value.ToString());
+            _nameTask = newBuffTasks.NameTask;
+            newTaskList.Add(new TaskList(_nameTask));
+
+        }
+        else
+        {
+            newProductList = MongoDataBase.GetComponentList(_numberProject);
+            newTaskList = MongoDataBase.GetProjectTaskList(_numberProject);
+            var buffTasks = taskLists.Find(x => x.NameTask == args.Value.ToString());
+            _nameTask = buffTasks.NameTask;
+            var task = newTaskList.Find(x => x.NameTask == _nameTask);
+            if (task == null)
+            {
+                newTaskList.Add(new TaskList(_nameTask));
+                showTaskList.Add(new TaskList(_nameTask));
+                MongoDataBase.ReplaceProject(_numberProject, new Project(_numberProject, _nameProject, newTaskList, newProductList));
+            }
+        }
+        OnInitialized();
+    }
+
+    private void SelectionComponent(ChangeEventArgs args)
+    {
+        if (_isNewProject)
+        {
+            var newBuffComponent = productList.Find(x => x.Name == args.Value.ToString());
+            newBuffComponent.Count = 1;
+            newProductList.Add(newBuffComponent);
+
+        }
+        else
+        {
+            newProductList = MongoDataBase.GetComponentList(_numberProject);
+            newTaskList = MongoDataBase.GetProjectTaskList(_numberProject);
+            var buffComponent = productList.Find(x => x.Name == args.Value.ToString());
+            buffComponent.Count = 1;
+            var name = buffComponent.Name;
+            var component = newProductList.Find(x => x.Name == name);
+            if (component == null)
+            {
+                newProductList.Add(buffComponent);
+                showProdyctList.Add(buffComponent);
+                MongoDataBase.ReplaceProject(_numberProject, new Project(_numberProject, _nameProject, newTaskList, newProductList));
+            }
+        }
+        OnInitialized();
+    }
+
+    private void AddNewTask()
+    {
+        MongoDataBase.AddTaskToDB(new TaskList(_nameTask));
+        _nameTask = string.Empty;
+    }
+
+    private void MinusClick()
+    {
+        if (_editCount > 0)
+        {
+            _editCount--;
+            _buffer++;
+        }
+    }
+
+    private void PlusClick()
+    {
+        if (_buffer > 0)
+        {
+            _editCount++;
+            _buffer--;
+        }
+
+    }
+    private void ReplaceCount()
+    {
+        if (_isNewProject)
+        {
+            if (newProductList.Exists(x => x.Article == _article))
+            {
+                var merch = newProductList.Find(x => x.Article == _article);
+                merch.Count = _editCount;
+            }
+            CancelEditCount();
+            //_isNewProject = false;
+            //IsNewproject();
+        }
+        else
+        {
+            var project = MongoDataBase.FindProject(_numberProject);
+            newProductList = MongoDataBase.GetComponentList(_numberProject);
+            if (newProductList.Exists(x => x.Article == _article))
+            {
+                var merch = newProductList.Find(x => x.Article == _article);
+                merch.Count = _editCount;
+            }
+            newTaskList = MongoDataBase.GetProjectTaskList(_numberProject);
+            MongoDataBase.ReplaceProject(_numberProject, new Project(_numberProject, _nameProject, newTaskList, newProductList));
+            CancelEditCount();
+            //_isEditActiv = false;
+            isEditActiv(_numberProject);
+            OnInitialized();
+        }
+        if (_count > _editCount)
+        {
+            _quantity += _count - _editCount;
+            Product.Replace(_article, _quantity);
+        }
+        else
+        {
+            _quantity -= _editCount - _count;
+            Product.Replace(_article, _quantity);
+        }
+    }
+
+    private void DeleteComponent(int article)
+    {
+        if (_isNewProject)
+        {
+            var buffComponent = newProductList.Find(x => x.Article == article);
+            newProductList.Remove(buffComponent);
+            _isNewProject = false;
+            //IsNewproject();
+        }
+        else
+        {
+            newProductList = MongoDataBase.GetComponentList(_numberProject);
+            newTaskList = MongoDataBase.GetProjectTaskList(_numberProject);
+            var buffComponent = newProductList.Find(x => x.Article == article);
+            newProductList.Remove(buffComponent);
+            showProdyctList.Remove(buffComponent);
+            MongoDataBase.ReplaceProject(_numberProject, new Project(_numberProject, _nameProject, newTaskList, newProductList));
+            _isEditActiv = false;
+            isEditActiv(_numberProject);
+        }
+    }
+
+    private void DeleteTask(string name)
+    {
+        if (_isNewProject)
+        {
+            var buffComponent = newTaskList.Find(x => x.NameTask == name);
+            newTaskList.Remove(buffComponent);
+            _isNewProject = false;
+            //IsNewproject();
+        }
+        else
+        {
+            newProductList = MongoDataBase.GetComponentList(_numberProject);
+            newTaskList = MongoDataBase.GetProjectTaskList(_numberProject);
+            var buffComponent = newTaskList.Find(x => x.NameTask == name);
+            newTaskList.Remove(buffComponent);
+            showTaskList.Remove(buffComponent);
+            MongoDataBase.ReplaceProject(_numberProject, new Project(_numberProject, _nameProject, newTaskList, newProductList));
+            _isEditActiv = false;
+            isEditActiv(_numberProject);
+        }
+    }
+    private void NumberProject()
+    {
+        int number = 100;
+        foreach (var item in project.projects)
+        {
+            number = item.NumberProject;
+        }
+        for (int i = 100; i <= number + 1; i++)
+        {
+            number = i;
+        }
+
+    }
+}
