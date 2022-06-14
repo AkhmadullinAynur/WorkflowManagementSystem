@@ -52,16 +52,15 @@ else
     {
         @if (_profession == "Проектировщик")
         {
-            <Planner></Planner>
-            <NavMenu Planner="true"></NavMenu>
+            <Planner/>
         }
         @if (_profession == "Инженер")
         {
-            <Engineer Login="@client.Name"></Engineer>
+            <Engineer/>
         }
         @if (_profession == "Кладовщик")
         {
-            <Warehouseman></Warehouseman>
+            <Warehouseman/>
         }
     }
 }

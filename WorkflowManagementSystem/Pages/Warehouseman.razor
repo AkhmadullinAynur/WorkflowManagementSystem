@@ -1,122 +1,134 @@
 ﻿@page "/warehouseman"
 @inject ProductService productService
+@inject Client client
 
-<div class="row border border-dark modal-content">
-    <table class="table table-responsive-md text-center">
-        <THeadComponent Warehouseman="true"></THeadComponent>
-        <tbody>
-            <TemplateTable Items="productService.merchandises">
-                <ItemTemplate Context="item">
-                    <td class="border-right" style="margin-left" align="left">@item.Name</td>
-                    <td class="border-right">@item.TypeProduct</td>
-                    <td class="border-right">@item.Manufacturer</td>
-                    <td class="border-right">@item.Article</td>
-                    <td class="border-right">@item.Quantity</td>
-                    <td>
-                        <button @onclick="()=>DeleteProduct(item.Article)">Удалить</button>
-                        <button @onclick="()=>EditProductActive(item.Article)">Изменить</button>
-                    </td>
-                </ItemTemplate>
-            </TemplateTable>
-        </tbody>
-    </table>
-    <table class="table table-responsive-md text-center">
-        <THeadComponent WarehousemanPanel="true"></THeadComponent>
-        <tbody class="table-primary">
-            @if (_newAddActive)
-            {
-                <MessageComponent NewAddComponent="true"></MessageComponent>
-            }
-            @if (_editTypeActive)
-            {
-                <MessageComponent TypeEdit="true"></MessageComponent>
-            }
-            @if (_editProductActive)
-            {
-                <MessageComponent ProductEdit="true" ProductName="@_nameProduct" ProductArticle="@_article"></MessageComponent>
-            }
-            @if (_newAddComplete)
-            {
-                <MessageComponent AddComponentComplete="true"></MessageComponent>
-            }
-            @if (_newTypeComplete)
-            {
-                <MessageComponent NewTypeComplete="true"></MessageComponent>
-            }
-            @if (_editComplete)
-            {
-                <MessageComponent EditComplete="true"></MessageComponent>
-            }
-        </tbody>
-        <tfoot class="table-primary">
-            @if (!_buttonActive)
-            {
-                <tr>
-                    <td align="left">
-                        <button class="btn btn-primary" @onclick="NewAddActive">Добавить новый товар в базу данных</button>
-                        <button class="btn btn-primary" @onclick="EditTypeActive">Добавить новую категорию товара</button>
-                    </td>
-                    <td colspan="5"></td>
-                </tr>
-            }
-            @if (_newAddActive)
-            {
-                <tr>
-                    <td><input class="form-control" placeholder="Введите название товара" @bind-value="_nameProduct" /></td>
-                    <td>
-                        <select class="form-control" @onchange="SelectionType">
-                            <option class="text-center" value="-1>\">Выбрать категорию продукта"</option>
-                            @foreach (var item in typeList)
-                            {
-                                <option>@item.TypeProduct</option>
-                            }
-                        </select>
-                    </td>
-                    <td><input class="form-control" placeholder="Введите производителя товара" @bind-value="_manufacturer" /></td>
-                    <td><input type="number" class="form-control" placeholder="" @bind-value="_quantity" /></td>
-                    <td>
-                        <button class="btn btn-primary" @onclick="AddProduct">Добавить новый товар в базу данных</button>
-                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
-                    </td>
-                    <td></td>
-                </tr>
-            }
-            @if (_editTypeActive)
-            {
-                <tr>
-                    <td><input class="form-control" placeholder="Веедите название" @bind-value="_typeProduct" /></td>
-                    <td align="left">
-                        <button class="btn btn-primary" @onclick="AddTypeToDB">Добавить новый тип в базу данных</button>
-                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
-                    </td>
-                    <td colspan="4"></td>
-                </tr>
-            }
-            @if (_editProductActive)
-            {
-                <tr>
-                    <td><input class="form-control" placeholder="Введите название товара" @bind-value="_nameProduct" /></td>
-                    <td>
-                        <select class="form-control" @onchange="SelectionType">
-                            <option class="text-center" value="-1>\">@_typeProduct</option>
-                            @foreach (var item in typeList)
-                            {
-                                <option>@item.TypeProduct</option>
-                            }
-                        </select>
-                    </td>
-                    <td><input class="form-control" placeholder="Введите производителя товара" @bind-value="_manufacturer" /></td>
-                    <td><input type="number" class="form-control" placeholder="" @bind-value="_quantity" /></td>
-                    <td><button class="btn-primary" @onclick="MinusClick">-</button>  @_quantity  <button class="btn-primary" @onclick="PlusClick">+</button></td>
-                    <td>
-                        <button class="btn btn-primary" @onclick="ReplaceProduct">Внести изменения</button>
-                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
-                    </td>
-                </tr>
-            }
-        </tfoot>
-    </table>
-</div>
+@if (client.Profession != "Кладовщик" && client.Name != "Admin" && client.Name != null)
+{
+    <WithoutAccess Warehouse="true" />
+}
+@if (client.Name == null)
+{
+    <WithoutAccess NotAuthorized="true" />
+}
+@if (client.Profession == "Кладовщик" || client.Name == "Admin")
+{
+    <div class="row border border-dark modal-content">
+        <table class="table table-responsive-md text-center">
+            <THeadComponent Warehouseman="true"></THeadComponent>
+            <tbody>
+                <TemplateTable Items="productService.merchandises">
+                    <ItemTemplate Context="item">
+                        <td class="border-right" align="left">@item.Name</td>
+                        <td class="border-right">@item.TypeProduct</td>
+                        <td class="border-right">@item.Manufacturer</td>
+                        <td class="border-right">@item.Article</td>
+                        <td class="border-right">@item.Quantity</td>
+                        <td>
+                            <button @onclick="()=>DeleteProduct(item.Article)">Удалить</button>
+                            <button @onclick="()=>EditProductActive(item.Article)">Изменить</button>
+                        </td>
+                    </ItemTemplate>
+                </TemplateTable>
+            </tbody>
+        </table>
+        <table class="table table-responsive-md text-center">
+            <THeadComponent WarehousemanPanel="true"></THeadComponent>
+            <tbody class="table-primary">
+                @if (_newAddActive)
+                {
+                    <MessageComponent NewAddComponent="true"></MessageComponent>
+                }
+                @if (_editTypeActive)
+                {
+                    <MessageComponent TypeEdit="true"></MessageComponent>
+                }
+                @if (_editProductActive)
+                {
+                    <MessageComponent ProductEdit="true" ProductName="@_nameProduct" ProductArticle="@_article"></MessageComponent>
+                }
+                @if (_newAddComplete)
+                {
+                    <MessageComponent AddComponentComplete="true"></MessageComponent>
+                }
+                @if (_newTypeComplete)
+                {
+                    <MessageComponent NewTypeComplete="true"></MessageComponent>
+                }
+                @if (_editComplete)
+                {
+                    <MessageComponent EditComplete="true"></MessageComponent>
+                }
+            </tbody>
+            <tfoot class="table-primary">
+                @if (!_buttonActive)
+                {
+                    <tr>
+                        <td align="left">
+                            <button class="btn btn-primary" @onclick="NewAddActive">Добавить новый товар в базу данных</button>
+                            <button class="btn btn-primary" @onclick="EditTypeActive">Добавить новую категорию товара</button>
+                        </td>
+                        <td colspan="5"></td>
+                    </tr>
+                }
+                @if (_newAddActive)
+                {
+                    <tr>
+                        <td><input class="form-control" placeholder="Введите название товара" @bind-value="_nameProduct" /></td>
+                        <td>
+                            <select class="form-control" @onchange="SelectionType">
+                                <option class="text-center" value="-1>\">Выбрать категорию продукта"</option>
+                                @foreach (var item in typeList)
+                                {
+                                    <option>@item.TypeProduct</option>
+                                }
+                            </select>
+                        </td>
+                        <td><input class="form-control" placeholder="Введите производителя товара" @bind-value="_manufacturer" /></td>
+                        <td><input type="number" class="form-control" placeholder="" @bind-value="_quantity" /></td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="AddProduct">Добавить новый товар в базу данных</button>
+                            <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                        </td>
+                        <td></td>
+                    </tr>
+                }
+                @if (_editTypeActive)
+                {
+                    <tr>
+                        <td><input class="form-control" placeholder="Веедите название" @bind-value="_typeProduct" /></td>
+                        <td align="left">
+                            <button class="btn btn-primary" @onclick="AddTypeToDB">Добавить новый тип в базу данных</button>
+                            <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                        </td>
+                        <td colspan="4"></td>
+                    </tr>
+                }
+                @if (_editProductActive)
+                {
+                    <tr>
+                        <td><input class="form-control" placeholder="Введите название товара" @bind-value="_nameProduct" /></td>
+                        <td>
+                            <select class="form-control" @onchange="SelectionType">
+                                <option class="text-center" value="-1>\">@_typeProduct</option>
+                                @foreach (var item in typeList)
+                                {
+                                    <option>@item.TypeProduct</option>
+                                }
+                            </select>
+                        </td>
+                        <td><input class="form-control" placeholder="Введите производителя товара" @bind-value="_manufacturer" /></td>
+                        <td><input type="number" class="form-control" placeholder="" @bind-value="_quantity" /></td>
+                        <td><button class="btn-primary" @onclick="MinusClick">-</button>  @_quantity  <button class="btn-primary" @onclick="PlusClick">+</button></td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="ReplaceProduct">Внести изменения</button>
+                            <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                        </td>
+                    </tr>
+                }
+            </tfoot>
+        </table>
+    </div>
+}
 
 @code {
     List<Product> merchandises = new List<Product>();

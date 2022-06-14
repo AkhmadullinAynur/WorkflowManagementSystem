@@ -13,12 +13,14 @@ namespace WorkflowManagementSystem.Data
         [Required(ErrorMessage = "Необходимо заполнить это поле")]
         public string Password { get; set; }
 
+        public string SurName { get; set; }
         public string Profession { get; set; }
         public void GetProfession()
         {
             var client = MongoDataBase.FindUser(Name);
             foreach (var item in client)
             {
+                SurName = item.SurName;
                 Profession = item.Profession;
             }
         }

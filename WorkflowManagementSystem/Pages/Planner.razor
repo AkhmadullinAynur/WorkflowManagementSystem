@@ -1,267 +1,270 @@
 ﻿@page "/planner"
-@inject Client clientName
+@inject Project project
+@inject Client client
 
-@if (clientName.Profession != "Проектировщик")
+@if (client.Profession != "Проектировщик" && client.Name != "Admin" && client.Name != null)
 {
-    <WithoutAccess/>
+    <WithoutAccess NotAccess="true" />
 }
-else
+@if (client.Name == null)
 {
-<div class="row border border-dark modal-content">
-    <table class="table table-responsive-md text-center">
-        <THeadComponent Planner="true"></THeadComponent>
-        <tbody>
-            <TemplateTable Items="project.projects">
-                <ItemTemplate Context="item">
-                    <td class="border-right">@item.NumberProject</td>
-                    <td class="border-right">@item.NameProject</td>
-                    <td class="border-right">
-                        <select class="form-control">
-                            <option class="text-center" value="-1>\">Перечень работ</option>
-                            @foreach (var item in item.TaskList)
-                            {
-                                <option value="@item.NameTask">@item.NameTask</option>
-                            }
-                        </select>
-                    </td>
-                    <td class="border-right">
-                        <select class="form-control">
-                            <option class="text-center" value="-1>\">Список комплектующих</option>
-                            @foreach (var item in item.ComponentList)
-                            {
-                                <option value="@item.Name">@item.Name</option>
-                            }
-                        </select>
-                    </td>
-                    @if (@item.PerformerOfWorks == null)
-                    {
-                        <td class="border-right">Исполнитель еще не назначен.</td>
-                        <td class="border-right">Сборка не началась.</td>
-                    }
-                    else
-                    {
-                        <td class="border-right">@item.PerformerOfWorks</td>
-                        @if (@item.IsDone == true)
-                        {
-                            <td class="border-right">Сборка завершена.</td>
-                        }
-                        else
-                        {
-                            <td class="border-right">Сборка началась.</td>
-                        }
-                    }
-                    @if (@item.PerformerOfWorks == null)
-                    {
-                        <td class="border-right">----------------------</td>
-                    }
-                    else
-                    {
-                        @if (@item.IsDone == true)
-                        {
-                            <td class="border-right">@item.CompletionDate</td>
-                        }
-                        else
-                        {
-                            <td class="border-right">@item.StartDate</td>
-                        }
-                    }
-                    <td>
-                        <button @onclick="()=>DeleteProject(item.NumberProject)">Удалить</button>
-                        <button @onclick="()=>IsEditActiv(item.NumberProject)">Изменить</button>
-                    </td>
-                </ItemTemplate>
-            </TemplateTable>
-            @if (_isRegComplete)
-            {
-                <MessageComponent AddNewProject="true"></MessageComponent>
-            }
-            @if (_isEditComplete)
-            {
-                <MessageComponent EditProjectComplete="true"></MessageComponent>
-            }
-            @if (_addTaskComplete)
-            {
-                <MessageComponent AddNewTask="true"></MessageComponent>
-            }
-        </tbody>
-    </table>
-    <table class="table table-responsive-md text-center">
-        @if (_isEditActiv)
-        {
-            <THeadComponent EditProject="true" Number="@_numberProject"></THeadComponent>
+    <WithoutAccess NotAuthorized="true" />
+}
+@if (client.Profession == "Проектировщик" || client.Name == "Admin")
+{
+    <div class="row border border-dark modal-content">
+        <table class="table table-responsive-md text-center">
+            <THeadComponent Planner="true"></THeadComponent>
             <tbody>
-                <TemplateTable Items="projects">
+                <TemplateTable Items="project.projects">
                     <ItemTemplate Context="item">
                         <td class="border-right">@item.NumberProject</td>
                         <td class="border-right">@item.NameProject</td>
-                        <td class="border-right text-center">
-                            <label align="left">
+                        <td class="border-right">
+                            <select class="form-control">
+                                <option class="text-center" value="-1>\">Перечень работ</option>
                                 @foreach (var item in item.TaskList)
                                 {
-                            <tr><td>@item.NameTask <button @onclick="()=>DeleteTask(item.NameTask)">Удалить</button></td></tr>
-                        }
-                                @foreach (var item in showTaskList)
-                                {
-                                    <tr><td>@item.NameTask <button @onclick="()=>DeleteTask(item.NameTask)">Удалить</button></td></tr>
+                                    <option value="@item.NameTask">@item.NameTask</option>
                                 }
-                                </label>
-                                </td>
-                                <td class="border-right">
-                                    <label align="left">
-                                        @foreach (var item in item.ComponentList)
-                                        {
-                                    <tr><td>@item.Name  <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
-                                }
-                                        @foreach (var item in showProdyctList)
-                                        {
-                                            <tr><td>@item.Name  <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
-                                        }
-                                        </label>
-                                        </td>
-                                        <td class="border-right">
-                                            <label align="left">
-                                                @foreach (var item in item.ComponentList)
-                                                {
-
-                                            <tr><td>@item.Count  <button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
-                                        }
-                                                @foreach (var item in showProdyctList)
-                                                {
-                                                    <tr><td>@item.Count  <button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
-                                                }
-                                                </label>
-                                                </td>
-                                            </ItemTemplate>
-                                        </TemplateTable>
-                                    </tbody>
-                                }
-        @if (_isNewProject)
-        {
-            <THeadComponent NewProject="true" Number="@_numberProject"></THeadComponent>
-            <tbody class="text-center">
-                <tr>
-                    <td class="border-right">@_numberProject</td>
-                    <td class="border-right">@_nameProject</td>
-                    <td class="border-right">
-                        <label align="left">
-                            @foreach (var item in newTaskList)
-                            {
-                    <tr><td>@item.NameTask <button @onclick="()=>DeleteTask(item.NameTask)">Удалить</button></td></tr>
-                }
-                            </label>
-                            </td>
+                            </select>
+                        </td>
                         <td class="border-right">
-                            <label align="left">
-                                @foreach (var item in newProductList)
+                            <select class="form-control">
+                                <option class="text-center" value="-1>\">Список комплектующих</option>
+                                @foreach (var item in item.ComponentList)
                                 {
-                            <tr><td>@item.Name <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
-                        }
-                                </label>
-                                </td>
-                                <td>
-                                    <label align="left">
-                                        @foreach (var item in newProductList)
-                                        {
-                                    <tr><td>@item.Count  <button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
+                                    <option value="@item.Name">@item.Name</option>
                                 }
-                                        </label>
-                                        </td>
-                                        </tr>
+                            </select>
+                        </td>
+                        @if (@item.PerformerOfWorks == null)
+                        {
+                            <td class="border-right">Исполнитель еще не назначен.</td>
+                            <td class="border-right">Сборка не началась.</td>
+                        }
+                        else
+                        {
+                            <td class="border-right">@item.PerformerOfWorks</td>
+                            @if (@item.IsDone == true)
+                            {
+                                <td class="border-right">Сборка завершена.</td>
+                            }
+                            else
+                            {
+                                <td class="border-right">Сборка началась.</td>
+                            }
+                        }
+                        @if (@item.PerformerOfWorks == null)
+                        {
+                            <td class="border-right">----------------------</td>
+                        }
+                        else
+                        {
+                            @if (@item.IsDone == true)
+                            {
+                                <td class="border-right">@item.CompletionDate</td>
+                            }
+                            else
+                            {
+                                <td class="border-right">@item.StartDate</td>
+                            }
+                        }
+                        <td>
+                            <button @onclick="()=>DeleteProject(item.NumberProject)">Удалить</button>
+                            <button @onclick="()=>IsEditActiv(item.NumberProject)">Изменить</button>
+                        </td>
+                    </ItemTemplate>
+                </TemplateTable>
+                @if (_isRegComplete)
+                {
+                    <MessageComponent AddNewProject="true"></MessageComponent>
+                }
+                @if (_isEditComplete)
+                {
+                    <MessageComponent EditProjectComplete="true"></MessageComponent>
+                }
+                @if (_addTaskComplete)
+                {
+                    <MessageComponent AddNewTask="true"></MessageComponent>
+                }
+            </tbody>
+        </table>
+        <table class="table table-responsive-md text-center">
+            @if (_isEditActiv)
+            {
+                <THeadComponent EditProject="true" Number="@_numberProject"></THeadComponent>
+                <tbody>
+                    <TemplateTable Items="projects">
+                        <ItemTemplate Context="item">
+                            <td class="border-right">@item.NumberProject</td>
+                            <td class="border-right">@item.NameProject</td>
+                            <td class="border-right text-center">
+                                <label align="left">
+                                    @foreach (var item in item.TaskList)
+                                    {
+                                <tr><td>@item.NameTask <button @onclick="()=>DeleteTask(item.NameTask)">Удалить</button></td></tr>
+                            }
+                                    @foreach (var item in showTaskList)
+                                    {
+                                        <tr><td>@item.NameTask <button @onclick="()=>DeleteTask(item.NameTask)">Удалить</button></td></tr>
+                                    }
+                                    </label>
+                                    </td>
+                                    <td class="border-right">
+                                        <label align="left">
+                                            @foreach (var item in item.ComponentList)
+                                            {
+                                        <tr><td>@item.Name  <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
+                                    }
+                                            @foreach (var item in showProdyctList)
+                                            {
+                                                <tr><td>@item.Name  <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
+                                            }
+                                            </label>
+                                            </td>
+                                            <td class="border-right">
+                                                <label align="left">
+                                                    @foreach (var item in item.ComponentList)
+                                                    {
+
+                                                <tr><td>@item.Count  <button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
+                                            }
+                                                    @foreach (var item in showProdyctList)
+                                                    {
+                                                        <tr><td>@item.Count  <button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
+                                                    }
+                                                    </label>
+                                                    </td>
+                                                </ItemTemplate>
+                                            </TemplateTable>
                                         </tbody>
                                     }
-    </table>
-    <table class="table table-responsive-md text-center">
-        <tfoot class="table-primary">
-            @if (!_isNewProjectActive)
+            @if (_isNewProject)
             {
-                <tr>
-                    <td align="left">
-                        <button class="btn btn-primary" @onclick="IsNewproject">Создать новый проект</button>
-                        <button class="btn btn-primary" @onclick="AddTaskActive">Пополнить перечень работ</button>
-                    </td>
-                    <td colspan="7"></td>
-                </tr>
-            }
-            @if (_isEditActivPanel || _isNewProject)
-            {
-                <tr>
-                    <td><input class="form-control" placeholder="Номер проекта" @bind-value="_numberProject" /></td>
-                    <td><input class="form-control" placeholder="Название проекта" @bind-value="_nameProject" /></td>
-                    <td>
-                        <select class="form-control" @onchange="SelectionTask">
-                            <option class="text-center" value="-1>\">Перечень работ</option>
-                            @foreach (var item in taskLists)
-                            {
-                                <option>@item.NameTask</option>
+                <THeadComponent NewProject="true" Number="@_numberProject"></THeadComponent>
+                <tbody class="text-center">
+                    <tr>
+                        <td class="border-right">@_numberProject</td>
+                        <td class="border-right">@_nameProject</td>
+                        <td class="border-right">
+                            <label align="left">
+                                @foreach (var item in newTaskList)
+                                {
+                        <tr><td>@item.NameTask <button @onclick="()=>DeleteTask(item.NameTask)">Удалить</button></td></tr>
+                    }
+                                </label>
+                                </td>
+                            <td class="border-right">
+                                <label align="left">
+                                    @foreach (var item in newProductList)
+                                    {
+                                <tr><td>@item.Name <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
                             }
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-control" @onchange="SelectionComponent">
-                            <option class="text-center" value="-1>\">Список комплектующих"</option>
-                            @foreach (var item in productList)
-                            {
-                                <option value="@item.Name">@item.Name</option>
-                            }
-                        </select>
-                    </td>
-                    @if (_isEditActiv)
-                    {
+                                    </label>
+                                    </td>
+                                    <td>
+                                        <label align="left">
+                                            @foreach (var item in newProductList)
+                                            {
+                                        <tr><td>@item.Count  <button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
+                                    }
+                                            </label>
+                                            </td>
+                                            </tr>
+                                            </tbody>
+                                        }
+        </table>
+        <table class="table table-responsive-md text-center">
+            <tfoot class="table-primary">
+                @if (!_isNewProjectActive)
+                {
+                    <tr>
+                        <td align="left">
+                            <button class="btn btn-primary" @onclick="IsNewproject">Создать новый проект</button>
+                            <button class="btn btn-primary" @onclick="AddTaskActive">Пополнить перечень работ</button>
+                        </td>
+                        <td colspan="7"></td>
+                    </tr>
+                }
+                @if (_isEditActivPanel || _isNewProject)
+                {
+                    <tr>
+                        <td><input class="form-control" placeholder="Номер проекта" @bind-value="_numberProject" /></td>
+                        <td><input class="form-control" placeholder="Название проекта" @bind-value="_nameProject" /></td>
                         <td>
-                            <button class="btn btn-primary" @onclick="FinishEdit">Сохранить изменения</button>
+                            <select class="form-control" @onchange="SelectionTask">
+                                <option class="text-center" value="-1>\">Перечень работ</option>
+                                @foreach (var item in taskLists)
+                                {
+                                    <option>@item.NameTask</option>
+                                }
+                            </select>
                         </td>
                         <td>
-                            <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                            <select class="form-control" @onchange="SelectionComponent">
+                                <option class="text-center" value="-1>\">Список комплектующих"</option>
+                                @foreach (var item in productList)
+                                {
+                                    <option value="@item.Name">@item.Name</option>
+                                }
+                            </select>
+                        </td>
+                        @if (_isEditActiv)
+                        {
+                            <td>
+                                <button class="btn btn-primary" @onclick="FinishEdit">Сохранить изменения</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                            </td>
+                            <td colspan="2"></td>
+                        }
+                        @if (_isNewProject)
+                        {
+                            <td>
+                                <button class="btn btn-primary" @onclick="AddProjectToDataBase">Добавить проект в базу данных</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                            </td>
+                            <td colspan="2"></td>
+                        }
+                    </tr>
+                }
+                @if (_countEditActive)
+                {
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><h5 class="table table-responsive-md font-weight-bolder">Название товара: <span style="color: red"> @_nameComponent</span></h5></td>
+                        <td><h5 class="table table-responsive-md font-weight-bolder">Количество на складе: <span style="color: red"> @_buffer</span></h5></td>
+                        <td><button class="btn-primary" @onclick="()=>MinusClick()">-</button>  @_editCount  <button class="btn-primary" @onclick="()=>PlusClick()">+</button></td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="ReplaceCount">Сохранить</button>
+                            <button class="btn btn-primary" @onclick="CancelEditCount">Отмена</button>
                         </td>
                         <td colspan="2"></td>
-                    }
-                    @if (_isNewProject)
-                    {
+                    </tr>
+                }
+                @if (_addTaskActive)
+                {
+                    <tr>
                         <td>
-                            <button class="btn btn-primary" @onclick="AddProjectToDataBase">Добавить проект в базу данных</button>
+                            <input class="form-control" placeholder="Введите название задачи" @bind-value="_nameTask" />
                         </td>
-                        <td>
+                        <td align="left">
+                            <button class="btn btn-primary" @onclick="AddNewTask">Создать новую задачу</button>
                             <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
                         </td>
-                        <td colspan="2"></td>
-                    }
-                </tr>
-            }
-            @if (_countEditActive)
-            {
-                <tr>
-                    <td colspan="2"></td>
-                    <td><h5 class="table table-responsive-md font-weight-bolder">Название товара: <span style="color: red"> @_nameComponent</span></h5></td>
-                    <td><h5 class="table table-responsive-md font-weight-bolder">Количество на складе: <span style="color: red"> @_buffer</span></h5></td>
-                    <td><button class="btn-primary" @onclick="()=>MinusClick()">-</button>  @_editCount  <button class="btn-primary" @onclick="()=>PlusClick()">+</button></td>
-                    <td>
-                        <button class="btn btn-primary" @onclick="ReplaceCount">Сохранить</button>
-                        <button class="btn btn-primary" @onclick="CancelEditCount">Отмена</button>
-                    </td>
-                    <td colspan="2"></td>
-                </tr>
-            }
-            @if (_addTaskActive)
-            {
-                <tr>
-                    <td>
-                        <input class="form-control" placeholder="Введите название задачи" @bind-value="_nameTask" />
-                    </td>
-                    <td align="left">
-                        <button class="btn btn-primary" @onclick="AddNewTask">Создать новую задачу</button>
-                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
-                    </td>
-                    <td colspan="6"></td>
-                </tr>
-            }
-        </tfoot>
-    </table>
-</div>
+                        <td colspan="6"></td>
+                    </tr>
+                }
+            </tfoot>
+        </table>
+    </div>
 }
 
 @code {
-    [Inject] Project project { get; set; }
-
     List<Project> projects = new List<Project>();
     List<TaskList> taskLists = MongoDataBase.GetTaskList();
     List<Product> productList = MongoDataBase.GetProductList();
@@ -443,7 +446,7 @@ else
 
     private void AddProjectToDataBase()
     {
-        if ( _nameProject != null)
+        if (_nameProject != null)
         {
             MongoDataBase.AddProjectToDB(new Project(_numberProject, _nameProject, newTaskList, newProductList));
             OnInitialized();

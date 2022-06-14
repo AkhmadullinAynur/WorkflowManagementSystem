@@ -1,4 +1,6 @@
-﻿@if (EditProject)
+﻿@inject Client client
+
+@if (EditProject)
 {
     <thead class="table-primary text-center">
         <tr>
@@ -138,6 +140,26 @@
         </tr>
     </thead>
 }
+@if (NotWarehouseman)
+{
+<thead >
+    <tr class="alert-warning">
+        <td colspan="5">
+            <h1 class=" text-center font-weight-bold">
+                Вы вошли под именем: <span style="color: red"><u> @client.Name </u></span> должность: <span style="color: red"><u> @client.Profession </u></span>.
+                У вас ограниченный доступ к этой странице.
+            </h1>
+        </td>
+    </tr>
+    <tr class="table-primary">
+        <th>Наименование товара</th>
+        <th>Категория товара</th>
+        <th>Производитель</th>
+        <th>Артикул</th>
+        <th>Количество на складе</th>
+    </tr>
+</thead>
+}
 @if (WarehousemanPanel)
 {
     <thead>
@@ -164,6 +186,7 @@
     [Parameter] public bool Planner { get; set; }
     [Parameter] public bool PlannerPanel { get; set; }
     [Parameter] public bool Warehouseman { get; set; }
+    [Parameter] public bool NotWarehouseman { get; set; }
     [Parameter] public bool WarehousemanPanel { get; set; }
 
     [Parameter] public int Number { get; set; }

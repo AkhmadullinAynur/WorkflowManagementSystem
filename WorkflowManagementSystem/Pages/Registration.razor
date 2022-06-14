@@ -86,7 +86,7 @@
                 </tr>
             </thead>
         </table>
-        <EditForm Model="user" OnInvalidSubmit="NewRegistration" OnValidSubmit="NewRegistration" class="table table-responsive-md">
+        <EditForm Model="user" OnValidSubmit="NewRegistration" class="table table-responsive-md">
             <DataAnnotationsValidator />
             <label></label>
             <ValidationMessage For="()=>user.Name" />
@@ -170,6 +170,11 @@
         _isComplete = true;
         _isNotComplete = false;
         MongoDataBase.AddUser(new User(user.Name, user.SurName, user.Profession, user.Email, user.PhoneNumber, user.Password));
+        user.Name = string.Empty;
+        user.SurName = string.Empty;
+        user.Email = string.Empty;
+        user.PhoneNumber = string.Empty;
+        user.Password = string.Empty;
         OnInitialized();
     }
 
