@@ -224,7 +224,7 @@ namespace WorkflowManagementSystem.Data
         public static List<Product> FindProduct(int article)
         {
             var client = new MongoClient("mongodb://localhost");
-            var database = client.GetDatabase("Workflow Management System");
+            var database = client.GetDatabase("Workflow_Management_System");
             var collection = database.GetCollection<Product>("Product");
             var item = collection.Find(x => x.Article == article).ToList();
             return item;

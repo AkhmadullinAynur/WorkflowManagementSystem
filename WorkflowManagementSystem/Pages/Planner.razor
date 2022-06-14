@@ -59,7 +59,7 @@
                     }
                     <td>
                         <button @onclick="()=>DeleteProject(item.NumberProject)">Удалить</button>
-                        <button @onclick="()=>isEditActiv(item.NumberProject)">Изменить</button>
+                        <button @onclick="()=>IsEditActiv(item.NumberProject)">Изменить</button>
                     </td>
                 </ItemTemplate>
             </TemplateTable>
@@ -73,6 +73,12 @@
             {
                 <tr>
                     <td colspan="8" class="alert-success"><h3 class=" text-center font-weight-bolder">Изменения успешно внесены в проект!</h3></td>
+                </tr>
+            }
+            @if (_addTaskComplete)
+            {
+                <tr>
+                    <td colspan="8" class="alert-success"><h3 class=" text-center font-weight-bolder">Новая задача успешно дабавлена в базу данных!</h3></td>
                 </tr>
             }
         </tbody>
@@ -185,13 +191,13 @@
                                         }
     </table>
     <table class="table table-responsive-md text-center">
-
         <tfoot class="table-primary">
             @if (!_isNewProjectActive)
             {
                 <tr>
                     <td align="left">
                         <button class="btn btn-primary" @onclick="IsNewproject">Создать новый проект</button>
+                        <button class="btn btn-primary" @onclick="AddTaskActive">Пополнить перечень работ</button>
                     </td>
                     <td colspan="7"></td>
                 </tr>
@@ -255,6 +261,19 @@
                     <td colspan="2"></td>
                 </tr>
             }
+            @if (_addTaskActive)
+            {
+                <tr>
+                    <td>
+                        <input class="form-control" placeholder="Введите название задачи" @bind-value="_nameTask" />
+                    </td>
+                    <td align="left">
+                        <button class="btn btn-primary" @onclick="AddNewTask">Создать новую задачу</button>
+                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                    </td>
+                    <td colspan="6"></td>
+                </tr>
+            }
         </tfoot>
     </table>
 </div>
@@ -298,9 +317,12 @@
     private bool _isRegComplete;
     private bool _isEditComplete;
     private bool _countEditActive;
+    private bool _addTaskActive;
+    private bool _addTaskComplete;
 
     private void IsNewproject()
     {
+        MessageFalse();
         projects = new List<Project>();
         _numberProject = 99;
         foreach (var item in project.projects)
@@ -319,18 +341,25 @@
         _isNewProjectActive = !_isNewProjectActive;
     }
 
-    private void isEditActiv(int number)
+    private void IsEditActiv(int number)
     {
         Refrash();
+        MessageFalse();
         projects = MongoDataBase.FindProject(number);
         _isEditActiv = true;
         _isEditActivPanel = true;
         _isNewProjectActive = true;
         _isNewProject = false;
         _countEditActive = false;
+        _addTaskActive = false;
         OnInitialized();
     }
-
+    private void AddTaskActive()
+    {
+        MessageFalse();
+        _addTaskActive = !_addTaskActive;
+        _isNewProjectActive = true;
+    }
     private void countEditActive(int article)
     {
         _isEditActivPanel = false;
@@ -391,6 +420,14 @@
         _isRegComplete = false;
         _isEditComplete = false;
         _countEditActive = false;
+        _addTaskActive = false;
+        _addTaskComplete = false;
+    }
+    private void MessageFalse()
+    {
+        _isRegComplete = false;
+        _isEditComplete = false;
+        _addTaskComplete = false;
     }
     private void CancelEditCount()
     {
@@ -417,6 +454,8 @@
     protected override void OnInitialized()
     {
         project.projects = MongoDataBase.GetProjectList();
+        taskLists = MongoDataBase.GetTaskList();
+        productList = MongoDataBase.GetProductList();
         _isRegComplete = false;
         _isEditComplete = false;
         if (projects != null)
@@ -427,7 +466,6 @@
                 _nameProject = item.NameProject;
             }
         }
-
     }
 
     private void AddProjectToDataBase()
@@ -504,8 +542,14 @@
 
     private void AddNewTask()
     {
-        MongoDataBase.AddTaskToDB(new TaskList(_nameTask));
-        _nameTask = string.Empty;
+        if (_nameTask!=null)
+        {
+            MongoDataBase.AddTaskToDB(new TaskList(_nameTask));
+            _nameTask = string.Empty;
+            Cancel();
+            _addTaskComplete = true;
+            OnInitialized();
+        }
     }
 
     private void MinusClick()
@@ -552,7 +596,7 @@
             MongoDataBase.ReplaceProject(_numberProject, new Project(_numberProject, _nameProject, newTaskList, newProductList));
             CancelEditCount();
             //_isEditActiv = false;
-            isEditActiv(_numberProject);
+            IsEditActiv(_numberProject);
             OnInitialized();
         }
         if (_count > _editCount)
@@ -585,7 +629,7 @@
             showProdyctList.Remove(buffComponent);
             MongoDataBase.ReplaceProject(_numberProject, new Project(_numberProject, _nameProject, newTaskList, newProductList));
             _isEditActiv = false;
-            isEditActiv(_numberProject);
+            IsEditActiv(_numberProject);
         }
     }
 
@@ -607,7 +651,7 @@
             showTaskList.Remove(buffComponent);
             MongoDataBase.ReplaceProject(_numberProject, new Project(_numberProject, _nameProject, newTaskList, newProductList));
             _isEditActiv = false;
-            isEditActiv(_numberProject);
+            IsEditActiv(_numberProject);
         }
     }
     private void NumberProject()

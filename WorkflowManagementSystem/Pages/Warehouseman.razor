@@ -196,8 +196,8 @@
     private void AddProduct()
     {
         merchandises = MongoDataBase.GetProductList();
-        int newArticle = 1;
-        int article = 1;
+        int newArticle = 1000000;
+        int article = newArticle;
         foreach (var item in merchandises)
         {
             article = item.Article;
