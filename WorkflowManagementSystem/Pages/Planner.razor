@@ -1,4 +1,12 @@
 ﻿@page "/planner"
+@inject Client clientName
+
+@if (clientName.Profession != "Проектировщик")
+{
+    <WithoutAccess/>
+}
+else
+{
 <div class="row border border-dark modal-content">
     <table class="table table-responsive-md text-center">
         <THeadComponent Planner="true"></THeadComponent>
@@ -249,6 +257,7 @@
         </tfoot>
     </table>
 </div>
+}
 
 @code {
     [Inject] Project project { get; set; }

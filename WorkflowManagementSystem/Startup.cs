@@ -31,6 +31,7 @@ namespace WorkflowManagementSystem
             services.AddSingleton<UserService>();
             services.AddSingleton<Project>();
             services.AddSingleton<ProductService>();
+            services.AddSingleton<Client>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

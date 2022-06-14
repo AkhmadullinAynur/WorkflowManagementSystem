@@ -29,7 +29,7 @@ namespace WorkflowManagementSystem.Data
             var client = new MongoClient("mongodb://localhost");
             var database = client.GetDatabase("Workflow_Management_System");
             var collection = database.GetCollection<User>("Users");
-            var item = collection.Find(x => x.Name == name && x.PhoneNumber == password).FirstOrDefault();
+            var item = collection.Find(x => x.Name == name && x.Password == password).FirstOrDefault();
             return item;
         }
 

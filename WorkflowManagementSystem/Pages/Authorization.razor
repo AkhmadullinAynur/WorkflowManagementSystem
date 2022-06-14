@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject NavigationManager navigate
+@inject Client clientName
 
 @if (!_authorizationIsActive)
 {
@@ -11,14 +12,14 @@
                 </tr>
             </thead>
         </table>
-        <EditForm Model="client" OnValidSubmit="AuthorizationNow" class="table table-responsive-md">
+        <EditForm Model="clientName" OnValidSubmit="AuthorizationNow" class="table table-responsive-md">
             <DataAnnotationsValidator />
             <label>Имя пользователя:</label>
-            <ValidationMessage For="()=>client.Name" />
-            <InputText class="form-control" placeholder="Введите логин" @bind-Value="client.Name" />
+            <ValidationMessage For="()=>clientName.Name" />
+            <InputText class="form-control" placeholder="Введите логин" @bind-Value="clientName.Name" />
             <label>Пароль:</label>
-            <ValidationMessage For="()=>client.Password" />
-            <InputText type="password" class="form-control" placeholder="Введите пароль" @bind-Value="client.Password" />
+            <ValidationMessage For="()=>clientName.Password" />
+            <InputText type="password" class="form-control" placeholder="Введите пароль" @bind-Value="clientName.Password" />
             <label></label>
             <table class="table table-responsive-md">
                 <tfoot class="table-primary">
@@ -52,6 +53,7 @@ else
         @if (_profession == "Проектировщик")
         {
             <Planner></Planner>
+            <NavMenu Planner="true"></NavMenu>
         }
         @if (_profession == "Инженер")
         {
@@ -83,23 +85,24 @@ else
 
     private void AuthorizationNow()
     {
-        if (client.Name == "Admin" && client.Password == "admin")
+        var client = MongoDataBase.Authorization(clientName.Name, clientName.Password);
+        if (clientName.Name == "Admin" && clientName.Password == "admin")
         {
             navigate.NavigateTo("/admin");
         }
         else
-        if (client.Name == MongoDataBase.FindUserName(client.Name) && client.Password == MongoDataBase.FindUserPassword(client.Password))
+        if (client != null)
         {
-
-            var user = MongoDataBase.FindUser(client.Name);
+            var user = MongoDataBase.FindUser(clientName.Name);
             foreach (var item in user)
             {
                 _active = item.Active;
             }
             if (_active)
             {
-                _login = client.Name;
-                _profession = MongoDataBase.FindUserProfession(client.Name);
+                _login = clientName.Name;
+                clientName.GetProfession();
+                _profession = MongoDataBase.FindUserProfession(clientName.Name);
                 _isNotComplete = false;
                 _authorizationIsActive = !_authorizationIsActive;
             }
@@ -113,6 +116,39 @@ else
             _isNotComplete = true;
         }
     }
+    //private void AuthorizationNow()
+    //{
+    //    if (client.Name == "Admin" && client.Password == "admin")
+    //    {
+    //        navigate.NavigateTo("/admin");
+    //    }
+    //    else
+    //    if (client.Name == MongoDataBase.FindUserName(client.Name) && client.Password == MongoDataBase.FindUserPassword(client.Password))
+    //    {
+
+    //        var user = MongoDataBase.FindUser(client.Name);
+    //        foreach (var item in user)
+    //        {
+    //            _active = item.Active;
+    //        }
+    //        if (_active)
+    //        {
+    //            _login = client.Name;
+    //            clientName.SaveName();
+    //            _profession = MongoDataBase.FindUserProfession(client.Name);
+    //            _isNotComplete = false;
+    //            _authorizationIsActive = !_authorizationIsActive;
+    //        }
+    //        else
+    //        {
+    //            _notActive = !_notActive;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        _isNotComplete = true;
+    //    }
+    //}
 
     private void IsNotComplete()
     {

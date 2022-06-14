@@ -46,7 +46,6 @@
             @foreach (var item in users)
             {
                 <Registration _edit="@true" _Registartion="true" Login="@item.Name" Surname="@item.SurName" Profession="@item.Profession" Email="@item.Email" PhoneNumber="@item.PhoneNumber"></Registration>
-
             }
         }
         @if (_newRegistartion)
@@ -118,6 +117,5 @@
         _newRegistartion = false;
         users = MongoDataBase.FindUser(user);
     }
-
 
 }
