@@ -65,26 +65,19 @@
             </TemplateTable>
             @if (_isRegComplete)
             {
-                <tr>
-                    <td colspan="8" class="alert-success"><h3 class=" text-center font-weight-bolder">Проект успешно дабавлен в базу данных!</h3></td>
-                </tr>
+                <MessageComponent AddNewProject="true"></MessageComponent>
             }
             @if (_isEditComplete)
             {
-                <tr>
-                    <td colspan="8" class="alert-success"><h3 class=" text-center font-weight-bolder">Изменения успешно внесены в проект!</h3></td>
-                </tr>
+                <MessageComponent EditProjectComplete="true"></MessageComponent>
             }
             @if (_addTaskComplete)
             {
-                <tr>
-                    <td colspan="8" class="alert-success"><h3 class=" text-center font-weight-bolder">Новая задача успешно дабавлена в базу данных!</h3></td>
-                </tr>
+                <MessageComponent AddNewTask="true"></MessageComponent>
             }
         </tbody>
     </table>
     <table class="table table-responsive-md text-center">
-
         @if (_isEditActiv)
         {
             <THeadComponent EditProject="true" Number="@_numberProject"></THeadComponent>
@@ -94,7 +87,7 @@
                         <td class="border-right">@item.NumberProject</td>
                         <td class="border-right">@item.NameProject</td>
                         <td class="border-right text-center">
-                            <label>
+                            <label align="left">
                                 @foreach (var item in item.TaskList)
                                 {
                             <tr><td>@item.NameTask <button @onclick="()=>DeleteTask(item.NameTask)">Удалить</button></td></tr>
@@ -106,49 +99,34 @@
                                 </label>
                                 </td>
                                 <td class="border-right">
-                                    <label>
+                                    <label align="left">
                                         @foreach (var item in item.ComponentList)
                                         {
-                                    <tr><td>@item.Name <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
+                                    <tr><td>@item.Name  <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
                                 }
                                         @foreach (var item in showProdyctList)
                                         {
-                                            <tr><td>@item.Name <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
+                                            <tr><td>@item.Name  <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
                                         }
                                         </label>
                                         </td>
                                         <td class="border-right">
-                                            <label>
+                                            <label align="left">
                                                 @foreach (var item in item.ComponentList)
                                                 {
 
-                                            <tr><td>@item.Count</td></tr>
+                                            <tr><td>@item.Count  <button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
                                         }
                                                 @foreach (var item in showProdyctList)
                                                 {
-                                                    <tr><td>@item.Count</td></tr>
+                                                    <tr><td>@item.Count  <button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
                                                 }
                                                 </label>
-
                                                 </td>
-                                                <td>
-                                                    <label>
-                                                        @foreach (var item in item.ComponentList)
-                                                        {
-                                                    <tr><td><button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
-                                                }
-
-                                                        @foreach (var item in showProdyctList)
-                                                        {
-                                                            <tr><td><button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
-                                                        }
-                                                        </label>
-                                                        </td>
-                                                    </ItemTemplate>
-                                                </TemplateTable>
-                                            </tbody>
-                                        }
-
+                                            </ItemTemplate>
+                                        </TemplateTable>
+                                    </tbody>
+                                }
         @if (_isNewProject)
         {
             <THeadComponent NewProject="true" Number="@_numberProject"></THeadComponent>
@@ -157,7 +135,7 @@
                     <td class="border-right">@_numberProject</td>
                     <td class="border-right">@_nameProject</td>
                     <td class="border-right">
-                        <label>
+                        <label align="left">
                             @foreach (var item in newTaskList)
                             {
                     <tr><td>@item.NameTask <button @onclick="()=>DeleteTask(item.NameTask)">Удалить</button></td></tr>
@@ -165,7 +143,7 @@
                             </label>
                             </td>
                         <td class="border-right">
-                            <label>
+                            <label align="left">
                                 @foreach (var item in newProductList)
                                 {
                             <tr><td>@item.Name <button @onclick="()=>DeleteComponent(item.Article)">Удалить</button></td></tr>
@@ -173,22 +151,16 @@
                                 </label>
                                 </td>
                                 <td>
-                                    <label>
+                                    <label align="left">
                                         @foreach (var item in newProductList)
                                         {
-                                    <tr><td>@item.Count</td></tr>
+                                    <tr><td>@item.Count  <button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
                                 }
                                         </label>
                                         </td>
-                                        <label>
-                                            @foreach (var item in newProductList)
-                                            {
-                                            <tr><td><button @onclick="()=>countEditActive(item.Article)">Изменить количество</button></td></tr>
-                                        }
-                                            </label>
-                                            </tr>
-                                            </tbody>
-                                        }
+                                        </tr>
+                                        </tbody>
+                                    }
     </table>
     <table class="table table-responsive-md text-center">
         <tfoot class="table-primary">
@@ -362,11 +334,9 @@
     }
     private void countEditActive(int article)
     {
+        MessageFalse();
         _isEditActivPanel = false;
         _countEditActive = true;
-        //_isNewProject = false;
-        _isRegComplete = false;
-        _isEditComplete = false;
         _isNewProjectActive = true;
         product = MongoDataBase.FindProduct(article);
         if (_isNewProject)
@@ -406,7 +376,6 @@
         newTaskList = MongoDataBase.GetProjectTaskList(_numberProject);
         MongoDataBase.ReplaceProject(_numberProject, new Project(_numberProject, _nameProject, newTaskList, newProductList));
         OnInitialized();
-        Refrash();
         Cancel();
     }
 
@@ -417,11 +386,8 @@
         _isEditActivPanel = false;
         _isNewProjectActive = false;
         _isNewProject = false;
-        _isRegComplete = false;
-        _isEditComplete = false;
         _countEditActive = false;
         _addTaskActive = false;
-        _addTaskComplete = false;
     }
     private void MessageFalse()
     {
@@ -456,8 +422,6 @@
         project.projects = MongoDataBase.GetProjectList();
         taskLists = MongoDataBase.GetTaskList();
         productList = MongoDataBase.GetProductList();
-        _isRegComplete = false;
-        _isEditComplete = false;
         if (projects != null)
         {
             foreach (var item in projects)
@@ -470,18 +434,22 @@
 
     private void AddProjectToDataBase()
     {
-        MongoDataBase.AddProjectToDB(new Project(_numberProject, _nameProject, newTaskList, newProductList));
-        OnInitialized();
-        newTaskList = new List<TaskList>();
-        newProductList = new List<Product>();
-        _isNewProject = !_isNewProject;
-        _isRegComplete = !_isRegComplete;
-        _isNewProjectActive = !_isNewProjectActive;
-        Cancel();
+        if ( _nameProject != null)
+        {
+            MongoDataBase.AddProjectToDB(new Project(_numberProject, _nameProject, newTaskList, newProductList));
+            OnInitialized();
+            newTaskList = new List<TaskList>();
+            newProductList = new List<Product>();
+            _isNewProject = !_isNewProject;
+            _isRegComplete = !_isRegComplete;
+            _isNewProjectActive = !_isNewProjectActive;
+            Cancel();
+        }
     }
 
     private void DeleteProject(int number)
     {
+        MessageFalse();
         MongoDataBase.DeleteProject(number);
         Cancel();
         OnInitialized();
@@ -542,7 +510,7 @@
 
     private void AddNewTask()
     {
-        if (_nameTask!=null)
+        if (_nameTask != null)
         {
             MongoDataBase.AddTaskToDB(new TaskList(_nameTask));
             _nameTask = string.Empty;
@@ -617,8 +585,6 @@
         {
             var buffComponent = newProductList.Find(x => x.Article == article);
             newProductList.Remove(buffComponent);
-            _isNewProject = false;
-            //IsNewproject();
         }
         else
         {
@@ -639,8 +605,6 @@
         {
             var buffComponent = newTaskList.Find(x => x.NameTask == name);
             newTaskList.Remove(buffComponent);
-            _isNewProject = false;
-            //IsNewproject();
         }
         else
         {
@@ -654,17 +618,5 @@
             IsEditActiv(_numberProject);
         }
     }
-    private void NumberProject()
-    {
-        int number = 100;
-        foreach (var item in project.projects)
-        {
-            number = item.NumberProject;
-        }
-        for (int i = 100; i <= number + 1; i++)
-        {
-            number = i;
-        }
 
-    }
 }

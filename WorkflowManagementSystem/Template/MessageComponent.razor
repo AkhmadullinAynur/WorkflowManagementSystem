@@ -1,8 +1,22 @@
 ﻿@*PLANNER*@
-@if (false)
+@if (AddNewProject)
 {
     <tr>
-        <td colspan="6"><h4 class="table table-responsive-md font-weight-bolder">Редактирование проекта</h4></td>
+        <td colspan="8" class="alert-success"><h3 class=" text-center font-weight-bolder">Проект успешно дабавлен в базу данных!</h3></td>
+    </tr>
+}
+
+@if (EditProjectComplete)
+{
+    <tr>
+        <td colspan="8" class="alert-success"><h3 class=" text-center font-weight-bolder">Изменения успешно внесены в проект!</h3></td>
+    </tr>
+}
+
+@if (AddNewTask)
+{
+    <tr>
+        <td colspan="8" class="alert-success"><h3 class=" text-center font-weight-bolder">Новая задача успешно дабавлена в базу данных!</h3></td>
     </tr>
 }
 @*WAREHOUSEMAN*@
@@ -49,6 +63,10 @@
 }
 
 @code {
+    [Parameter] public bool AddNewProject { get; set; }
+    [Parameter] public bool EditProjectComplete { get; set; }
+    [Parameter] public bool AddNewTask { get; set; }
+
     [Parameter] public bool NewAddComponent { get; set; }
     [Parameter] public bool TypeEdit { get; set; }
     [Parameter] public bool ProductEdit { get; set; }
@@ -58,4 +76,6 @@
 
     [Parameter] public string ProductName { get; set; }
     [Parameter] public int ProductArticle { get; set; }
+
+
 }
