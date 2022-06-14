@@ -1,0 +1,68 @@
+﻿@inject Client client
+@inject ProductService productService
+@inject NavigationManager navigate
+
+@if (NotAuthorized)
+{
+    <div class="border border-danger modal-content">
+        <table>
+            <tbody class="alert-warning">
+                <tr>
+                    <th>
+                        <h1 class=" text-center font-weight-bold">Вы не прошли авторизацию. Пожалуйста вернитесь на страницу авторизации.</h1>                      
+                    </th>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <button class="btn btn-primary" @onclick="()=>navigate.NavigateTo(inAuthorization)">Вернуться на страницу авторизации</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (NotAccess)
+{
+    <div class="border border-danger modal-content">
+        <table>
+            <tbody>
+                <tr>
+                    <th class="alert-warning">
+                        <h1 class=" text-center font-weight-bold">
+                            Вы вошли под именем: <span style="color: red"><u> @client.Name </u></span> должность: <span style="color: red"><u> @client.Profession </u></span>.
+                            У вас нет доступа к этой странице.
+                        </h1>
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (Warehouse)
+{
+    <div class="row border border-dark modal-content">
+        <table class="table table-responsive-md text-center">
+            <THeadComponent NotWarehouseman="true"></THeadComponent>
+            <tbody>
+                <TemplateTable Items="productService.merchandises">
+                    <ItemTemplate Context="item">
+                        <td class="border-right" align="left">@item.Name</td>
+                        <td class="border-right">@item.TypeProduct</td>
+                        <td class="border-right">@item.Manufacturer</td>
+                        <td class="border-right">@item.Article</td>
+                        <td class="border-right">@item.Quantity</td>
+                    </ItemTemplate>
+                </TemplateTable>
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    [Parameter] public bool NotAuthorized { get; set; }
+    [Parameter] public bool NotAccess { get; set; }
+    [Parameter] public bool Warehouse { get; set; }
+    string inAuthorization = "/";
+}

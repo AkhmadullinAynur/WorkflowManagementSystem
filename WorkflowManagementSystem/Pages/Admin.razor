@@ -1,4 +1,7 @@
 ﻿@page "/admin"
+@inject Client client
+@inject NavigationManager navigate
+
 <div class="row border border-dark modal-body">
     <table class="table table-responsive-md">
         <THeadComponent Admin="true"></THeadComponent>
@@ -65,6 +68,11 @@
                     }
                 </td>
             </tr>
+            <tr>
+                <td colspan="6">
+                    <button class="btn btn-danger" @onclick="ExitOfAccount">Выйти из аккаунта администратора</button>
+                </td>
+            </tr>
         </tfoot>
     </table>
 </div>
@@ -117,5 +125,12 @@
         _newRegistartion = false;
         users = MongoDataBase.FindUser(user);
     }
-
+    private void ExitOfAccount()
+    {
+        client.Active = false;
+        client.Admin = false;
+        client.Name = null;
+        client.Password = null;
+        navigate.NavigateTo("/");
+    }
 }

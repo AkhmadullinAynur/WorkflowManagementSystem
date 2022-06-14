@@ -1,74 +1,79 @@
 ﻿@page "/"
 @inject NavigationManager navigate
-@inject Client clientName
+@inject Client client
 
-@if (!_authorizationIsActive)
+@if (client.Admin)
 {
-    <div class="col-md-6 offset-md-3">
-        <table class="table table-responsive-md">
-            <thead class="table-primary text-center">
-                <tr>
-                    <th><h2 class="font-weight-bolder">Authorization</h2></th>
-                </tr>
-            </thead>
-        </table>
-        <EditForm Model="clientName" OnValidSubmit="AuthorizationNow" class="table table-responsive-md">
-            <DataAnnotationsValidator />
-            <label>Имя пользователя:</label>
-            <ValidationMessage For="()=>clientName.Name" />
-            <InputText class="form-control" placeholder="Введите логин" @bind-Value="clientName.Name" />
-            <label>Пароль:</label>
-            <ValidationMessage For="()=>clientName.Password" />
-            <InputText type="password" class="form-control" placeholder="Введите пароль" @bind-Value="clientName.Password" />
-            <label></label>
-            <table class="table table-responsive-md">
-                <tfoot class="table-primary">
-                    @if (_isNotComplete)
-                    {
-                        <tr>
-                            <td class="alert-danger"><h2>Неверный логин или пароль!</h2></td>
-                        </tr>
-                    }
-                    @if (_notActive)
-                    {
-                        <tr>
-                            <td class="alert-warning"><h2>Ваш аккаунт проходит проверку на подлинность. Пожалуйста, повторите попытку позже.</h2></td>
-                        </tr>
-                    }
-                    <tr>
-                        <th>
-                            <button class="btn btn-primary">Авторизоваться</button>
-                            <button class="btn btn-primary" @onclick="()=>navigate.NavigateTo(inReg)">Регистрация нового пользователя</button>
-                        </th>
-                    </tr>
-                </tfoot>
-            </table>
-        </EditForm>
-    </div>
+    <Admin />
 }
 else
 {
-    if (_active)
+    @if (!client.Active)
     {
-        @if (_profession == "Проектировщик")
-        {
-            <Planner/>
-        }
-        @if (_profession == "Инженер")
-        {
-            <Engineer/>
-        }
-        @if (_profession == "Кладовщик")
-        {
-            <Warehouseman/>
-        }
+        <div class="col-md-6 offset-md-3">
+            <table class="table table-responsive-md">
+                <thead class="table-primary text-center">
+                    <tr>
+                        <th><h2 class="font-weight-bolder">Authorization</h2></th>
+                    </tr>
+                </thead>
+            </table>
+            <EditForm Model="client" OnValidSubmit="AuthorizationNow" class="table table-responsive-md">
+                <DataAnnotationsValidator />
+                <label>Имя пользователя:</label>
+                <ValidationMessage For="()=>client.Name" />
+                <InputText class="form-control" placeholder="Введите логин" @bind-Value="client.Name" />
+                <label>Пароль:</label>
+                <ValidationMessage For="()=>client.Password" />
+                <InputText type="password" class="form-control" placeholder="Введите пароль" @bind-Value="client.Password" />
+                <label></label>
+                <table class="table table-responsive-md">
+                    <tfoot class="table-primary">
+                        @if (_isNotComplete)
+                        {
+                            <tr>
+                                <td class="alert-danger"><h2>Неверный логин или пароль!</h2></td>
+                            </tr>
+                        }
+                        @if (_notActive)
+                        {
+                            <tr>
+                                <td class="alert-warning"><h2>Ваш аккаунт проходит проверку на подлинность. Пожалуйста, повторите попытку позже.</h2></td>
+                            </tr>
+                        }
+                        <tr>
+                            <th>
+                                <button class="btn btn-primary">Авторизоваться</button>
+                                <button class="btn btn-primary" @onclick="()=>navigate.NavigateTo(inReg)">Регистрация нового пользователя</button>
+                            </th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </EditForm>
+        </div>
+    }
+    @if (client.Active)
+    {
+        <div class="border border-danger modal-content">
+            <table>
+                <tbody class="alert-warning">
+                    <tr>
+                        <th>
+                            <h1 class=" text-center font-weight-bold">Ты вошел в личный кабинет</h1>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <button class="btn btn-primary" @onclick="ExitOfAccount">Выйти из аккаунта</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     }
 }
 
-
 @code {
-    Client client = new Client();
-
     string inReg = "/registration";
 
     private bool _authorizationIsActive;
@@ -84,26 +89,41 @@ else
 
     private void AuthorizationNow()
     {
-        var client = MongoDataBase.Authorization(clientName.Name, clientName.Password);
-        if (clientName.Name == "Admin" && clientName.Password == "admin")
+        var clientName = MongoDataBase.Authorization(client.Name, client.Password);
+        if (client.Name == "Admin" && client.Password == "admin")
         {
+            client.Admin = true;
             navigate.NavigateTo("/admin");
         }
         else
-        if (client != null)
+        if (clientName != null)
         {
-            var user = MongoDataBase.FindUser(clientName.Name);
+            var user = MongoDataBase.FindUser(client.Name);
             foreach (var item in user)
             {
                 _active = item.Active;
             }
             if (_active)
             {
-                _login = clientName.Name;
-                clientName.GetProfession();
-                _profession = MongoDataBase.FindUserProfession(clientName.Name);
+                _login = client.Name;
+                client.GetProfession();
+                _profession = MongoDataBase.FindUserProfession(client.Name);
+                client.Admin = false;
+                client.Active = true;
                 _isNotComplete = false;
                 _authorizationIsActive = !_authorizationIsActive;
+                if (_profession == "Проектировщик")
+                {
+                    navigate.NavigateTo("/planner");
+                }
+                if (_profession == "Инженер")
+                {
+                    navigate.NavigateTo("/engineer");
+                }
+                if (_profession == "Кладовщик")
+                {
+                    navigate.NavigateTo("/warehouseman");
+                }
             }
             else
             {
@@ -115,44 +135,17 @@ else
             _isNotComplete = true;
         }
     }
-    //private void AuthorizationNow()
-    //{
-    //    if (client.Name == "Admin" && client.Password == "admin")
-    //    {
-    //        navigate.NavigateTo("/admin");
-    //    }
-    //    else
-    //    if (client.Name == MongoDataBase.FindUserName(client.Name) && client.Password == MongoDataBase.FindUserPassword(client.Password))
-    //    {
-
-    //        var user = MongoDataBase.FindUser(client.Name);
-    //        foreach (var item in user)
-    //        {
-    //            _active = item.Active;
-    //        }
-    //        if (_active)
-    //        {
-    //            _login = client.Name;
-    //            clientName.SaveName();
-    //            _profession = MongoDataBase.FindUserProfession(client.Name);
-    //            _isNotComplete = false;
-    //            _authorizationIsActive = !_authorizationIsActive;
-    //        }
-    //        else
-    //        {
-    //            _notActive = !_notActive;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        _isNotComplete = true;
-    //    }
-    //}
 
     private void IsNotComplete()
     {
         _isNotComplete = true;
     }
-
-
+    private void ExitOfAccount()
+    {
+        client.Active = false;
+        client.Admin = false;
+        client.Name = null;
+        client.Password = null;
+        client.Profession = null;
+    }
 }

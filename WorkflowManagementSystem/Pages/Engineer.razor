@@ -77,7 +77,7 @@
                 <tbody>
                     <TemplateTable Items="project.projects">
                         <ItemTemplate Context="item">
-                            @if (item.PerformerOfWorks == client.Name)
+                            @if (item.PerformerOfWorks == (client.SurName + " " + client.Name))
                             {
                                 <td>@item.NumberProject</td>
                                 <td>@item.NameProject</td>
