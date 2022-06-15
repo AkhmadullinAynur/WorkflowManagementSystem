@@ -15,8 +15,6 @@ namespace WorkflowManagementSystem.Data
         {
             NameTask = nameTask;
         }
-
         public string NameTask { get; set; }
-
     }
 }

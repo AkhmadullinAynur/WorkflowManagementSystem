@@ -1,4 +1,4 @@
-﻿@*PLANNER*@
+﻿
 @if (AddNewProject)
 {
     <tr>
@@ -19,7 +19,7 @@
         <td colspan="8" class="alert-success"><h3 class=" text-center font-weight-bolder">Новая задача успешно дабавлена в базу данных!</h3></td>
     </tr>
 }
-@*WAREHOUSEMAN*@
+
 @if (NewAddComponent)
 {
     <tr>
@@ -76,6 +76,4 @@
 
     [Parameter] public string ProductName { get; set; }
     [Parameter] public int ProductArticle { get; set; }
-
-
 }

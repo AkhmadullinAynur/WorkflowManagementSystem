@@ -48,7 +48,6 @@ namespace WorkflowManagementSystem.Data
                 current.Quantity = count;
                 MongoDataBase.ReplaceProduct(article, current);
             }
-
         }
     }
 }

@@ -65,7 +65,6 @@ namespace WorkflowManagementSystem.Data
         public bool IsDone { get; set; }
 
 
-
         [BsonIgnoreIfDefault]
         public List<Project> projects { get; set; }
 

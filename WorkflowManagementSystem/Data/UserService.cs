@@ -15,6 +15,5 @@ namespace WorkflowManagementSystem.Data
         {
             listOfUsers = MongoDataBase.GetUserList();
         }
-
     }
 }
