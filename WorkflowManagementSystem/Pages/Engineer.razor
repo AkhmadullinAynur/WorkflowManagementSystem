@@ -122,10 +122,10 @@
                                 else
                                 {
                                     <td>Сборка началась.</td>
+                                    <td>
+                                        <button @onclick="()=>FinishBuild(item.NumberProject)">Завершить сборку</button>
+                                    </td>
                                 }
-                                <td>
-                                    <button @onclick="()=>FinishBuild(item.NumberProject)">Завершить сборку</button>
-                                </td>
                             }
                         </ItemTemplate>
                     </TemplateTable>
