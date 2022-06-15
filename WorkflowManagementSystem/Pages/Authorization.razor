@@ -54,20 +54,16 @@ else
     }
     @if (client.Active)
     {
-        <div class="border border-danger modal-content">
-            <table>
-                <tbody class="alert-warning">
+        <Account />
+        <div class="col-md-6 offset-md-3">
+            <table class="table table-responsive-md">
+                <tfoot class="table-primary">
                     <tr>
-                        <th>
-                            <h1 class=" text-center font-weight-bold">Ты вошел в личный кабинет</h1>
-                        </th>
-                    </tr>
-                    <tr>
-                        <td align="center">
-                            <button class="btn btn-primary" @onclick="ExitOfAccount">Выйти из аккаунта</button>
+                        <td align="left" colspan="3">
+                            <button class="btn btn-danger" @onclick="ExitOfAccount">Выйти из аккаунта</button>
                         </td>
                     </tr>
-                </tbody>
+                </tfoot>
             </table>
         </div>
     }
@@ -106,7 +102,7 @@ else
             if (_active)
             {
                 _login = client.Name;
-                client.GetProfession();
+                client.GetUserData();
                 _profession = MongoDataBase.FindUserProfession(client.Name);
                 client.Admin = false;
                 client.Active = true;
@@ -145,7 +141,10 @@ else
         client.Active = false;
         client.Admin = false;
         client.Name = null;
-        client.Password = null;
+        client.SurName = null;
         client.Profession = null;
+        client.Email = null;
+        client.PhoneNumber = null;
+        client.Password = null;
     }
 }

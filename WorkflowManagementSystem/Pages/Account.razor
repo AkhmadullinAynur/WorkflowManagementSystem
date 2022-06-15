@@ -1,0 +1,135 @@
+﻿@page "/account"
+@inject NavigationManager navigate
+@inject Client client
+
+<div class="col-md-6 offset-md-3">
+    <table class="table table-responsive-md">
+        <thead class="table-primary text-center">
+            <tr>
+                <td colspan="5"><h4 class="table table-responsive-md font-weight-bolder">Личный кабинет</h4></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>Имя:</td>
+                @if (!_editName)
+                {
+                    <td>@client.Name</td>
+                    <td><button class="btn btn-primary" @onclick="EditName">Редактировать</button></td>
+                }
+                else
+                {
+                    <td><input class="form-control" placeholder="Login" @bind-value="@client.Name" /></td>
+                    <td>
+                        <button class="btn btn-primary">Внести изменения</button>
+                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td>Фамилия:</td>
+                <td>@client.SurName</td>
+                @if (!_editSurName)
+                {
+                    <td><button class="btn btn-primary">Редактировать</button></td>
+                }
+                else
+                {
+                    <td>
+                        <button class="btn btn-primary">Внести изменения</button>
+                        <button class="btn btn-primary">Отмена</button>
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td>Должность:</td>
+                <td>@client.Profession</td>
+                @if (!_editProfession)
+                {
+                    <td><button class="btn btn-primary">Редактировать</button></td>
+                }
+                else
+                {
+                    <td>
+                        <button class="btn btn-primary">Внести изменения</button>
+                        <button class="btn btn-primary">Отмена</button>
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td>E-mail:</td>
+                <td>@client.Email</td>
+                @if (!_editEmail)
+                {
+                    <td><button class="btn btn-primary">Редактировать</button></td>
+                }
+                else
+                {
+                    <td>
+                        <button class="btn btn-primary">Внести изменения</button>
+                        <button class="btn btn-primary">Отмена</button>
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td>Сот.телефон:</td>
+                <td>@client.PhoneNumber</td>
+                @if (!_editPhonenumber)
+                {
+                    <td><button class="btn btn-primary">Редактировать</button></td>
+                }
+                else
+                {
+                    <td>
+                        <button class="btn btn-primary">Внести изменения</button>
+                        <button class="btn btn-primary">Отмена</button>
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td>Пароль:</td>
+                <td>@client.Password</td>
+                @if (!_editPassword)
+                {
+                    <td><button class="btn btn-primary">Редактировать</button></td>
+                }
+                else
+                {
+                    <td>
+                        <button class="btn btn-primary">Внести изменения</button>
+                        <button class="btn btn-primary">Отмена</button>
+                    </td>
+                }
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private bool _editName;
+    private bool _editSurName;
+    private bool _editProfession;
+    private bool _editEmail;
+    private bool _editPhonenumber;
+    private bool _editPassword;
+
+    private void EditName()
+    {
+        _editName = !_editName;
+    }
+
+    private void Cancel()
+    {
+        _editName = false;
+        _editSurName = false;
+        _editProfession = false;
+        _editPhonenumber = false;
+        _editPassword = false;
+    }
+
+}
