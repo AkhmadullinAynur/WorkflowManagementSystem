@@ -4,6 +4,18 @@
 
 @if (client.Admin)
 {
+    <div class="modal-body">
+        <table class="table table-responsive-md">
+            <thead class="table-primary">
+                <tr>
+                    <td><h3 class="text-center font-weight-bolder">Вы вошли как: <span style="color: red"> Администратор </span></h3></td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="ExitOfAccount">Выйти из аккаунта</button>
+                    </td>
+                </tr>
+            </thead>
+        </table>
+    </div>
     <Admin />
 }
 else
@@ -89,7 +101,7 @@ else
         if (client.Name == "Admin" && client.Password == "admin")
         {
             client.Admin = true;
-            navigate.NavigateTo("/admin");
+            //navigate.NavigateTo("/admin");
         }
         else
         if (clientName != null)

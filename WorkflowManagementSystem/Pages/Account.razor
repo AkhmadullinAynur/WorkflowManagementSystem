@@ -26,83 +26,96 @@
                 {
                     <td><input class="form-control" placeholder="Login" @bind-value="@client.Name" /></td>
                     <td>
-                        <button class="btn btn-primary">Внести изменения</button>
+                        <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
                         <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
                     </td>
                 }
             </tr>
             <tr>
                 <td>Фамилия:</td>
-                <td>@client.SurName</td>
                 @if (!_editSurName)
                 {
-                    <td><button class="btn btn-primary">Редактировать</button></td>
+                    <td>@client.SurName</td>
+                    <td><button class="btn btn-primary" @onclick="EditSurName">Редактировать</button></td>
                 }
                 else
                 {
+                    <td><input class="form-control" placeholder="Login" @bind-value="@client.SurName" /></td>
                     <td>
-                        <button class="btn btn-primary">Внести изменения</button>
-                        <button class="btn btn-primary">Отмена</button>
+                        <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
+                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
                     </td>
                 }
             </tr>
             <tr>
                 <td>Должность:</td>
-                <td>@client.Profession</td>
                 @if (!_editProfession)
                 {
-                    <td><button class="btn btn-primary">Редактировать</button></td>
+                    <td>@client.Profession</td>
+                    <td><button class="btn btn-primary" @onclick="EditProfession">Редактировать</button></td>
                 }
                 else
                 {
                     <td>
-                        <button class="btn btn-primary">Внести изменения</button>
-                        <button class="btn btn-primary">Отмена</button>
+                        <select class="form-control" @onchange="SelectionProfession">
+                            <option class="text-center" value="-1>\">Выбрать должность</option>
+                            @foreach (var item in professions)
+                            {
+                                <option value="@item.Profession">@item.Profession</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
+                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
                     </td>
                 }
             </tr>
             <tr>
                 <td>E-mail:</td>
-                <td>@client.Email</td>
                 @if (!_editEmail)
                 {
-                    <td><button class="btn btn-primary">Редактировать</button></td>
+                    <td>@client.Email</td>
+                    <td><button class="btn btn-primary" @onclick="EditEmail">Редактировать</button></td>
                 }
                 else
                 {
+                    <td><input class="form-control" placeholder="Login" @bind-value="@client.Email" /></td>
                     <td>
-                        <button class="btn btn-primary">Внести изменения</button>
-                        <button class="btn btn-primary">Отмена</button>
+                        <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
+                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
                     </td>
                 }
             </tr>
             <tr>
                 <td>Сот.телефон:</td>
-                <td>@client.PhoneNumber</td>
                 @if (!_editPhonenumber)
                 {
-                    <td><button class="btn btn-primary">Редактировать</button></td>
+                    <td>@client.PhoneNumber</td>
+                    <td><button class="btn btn-primary" @onclick="EditPhonenumber">Редактировать</button></td>
                 }
                 else
                 {
+                    <td><input class="form-control" placeholder="Login" @bind-value="@client.PhoneNumber" /></td>
                     <td>
-                        <button class="btn btn-primary">Внести изменения</button>
-                        <button class="btn btn-primary">Отмена</button>
+                        <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
+                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
                     </td>
                 }
             </tr>
             <tr>
                 <td>Пароль:</td>
-                <td>@client.Password</td>
                 @if (!_editPassword)
                 {
-                    <td><button class="btn btn-primary">Редактировать</button></td>
+                    <td>@client.Password</td>
+                    <td><button class="btn btn-primary" @onclick="EditPassword">Редактировать</button></td>
                 }
                 else
                 {
+                    <td><input class="form-control" placeholder="Login" @bind-value="@client.Password" /></td>
                     <td>
-                        <button class="btn btn-primary">Внести изменения</button>
-                        <button class="btn btn-primary">Отмена</button>
+                        <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
+                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
                     </td>
                 }
             </tr>
@@ -117,19 +130,90 @@
     private bool _editEmail;
     private bool _editPhonenumber;
     private bool _editPassword;
+    List<User> professions = User.GetListOfProfessions();
 
     private void EditName()
     {
-        _editName = !_editName;
+        _editName = true;
+        _editSurName = false;
+        _editProfession = false;
+        _editEmail = false;
+        _editPhonenumber = false;
+        _editPassword = false;
     }
-
+    private void EditSurName()
+    {
+        _editName = false;
+        _editSurName = true;
+        _editProfession = false;
+        _editEmail = false;
+        _editPhonenumber = false;
+        _editPassword = false;
+    }
+    private void EditProfession()
+    {
+        _editName = false;
+        _editSurName = false;
+        _editProfession = true;
+        _editEmail = false;
+        _editPhonenumber = false;
+        _editPassword = false;
+    }
+    private void EditEmail()
+    {
+        _editName = false;
+        _editSurName = false;
+        _editProfession = false;
+        _editEmail = true;
+        _editPhonenumber = false;
+        _editPassword = false;
+    }
+    private void EditPhonenumber()
+    {
+        _editName = false;
+        _editSurName = false;
+        _editProfession = false;
+        _editEmail = false;
+        _editPhonenumber = true;
+        _editPassword = false;
+    }
+    private void EditPassword()
+    {
+        _editName = false;
+        _editSurName = false;
+        _editProfession = false;
+        _editEmail = false;
+        _editPhonenumber = false;
+        _editPassword = true;
+    }
     private void Cancel()
     {
         _editName = false;
         _editSurName = false;
         _editProfession = false;
+        _editEmail = false;
         _editPhonenumber = false;
         _editPassword = false;
     }
-
+    private void SelectionProfession(ChangeEventArgs args)
+    {
+        client.Profession = args.Value.ToString();
+    }
+    private void EditUser()
+    {
+        bool active = true;
+        if (client.Name == "" || client.SurName == "" || client.Email == "" || client.PhoneNumber == "" || client.Password == "")
+        {
+            //_isNotComplete = true;
+        }
+        else
+        {
+            string buffer = MongoDataBase.FindUserPassword(client.Name);
+            MongoDataBase.ReplaceUser(buffer, new User(client.Name, client.SurName, client.Profession, client.Email, client.PhoneNumber, client.Password, active));
+            Cancel();
+            //_isComplete = true;
+            //_isNotComplete = false;
+        }
+        OnInitialized();
+    }
 }

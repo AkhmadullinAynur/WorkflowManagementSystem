@@ -50,12 +50,12 @@ namespace WorkflowManagementSystem.Data
             }
         }
 
-        public static string FindUserPassword(string password)
+        public static string FindUserPassword(string name)
         {
             var client = new MongoClient("mongodb://localhost");
             var database = client.GetDatabase("Workflow_Management_System");
             var collection = database.GetCollection<User>("Users");
-            var item = collection.Find(x => x.Password == password).FirstOrDefault();
+            var item = collection.Find(x => x.Name == name).FirstOrDefault();
             if (item == null)
             {
                 return null;
@@ -101,12 +101,12 @@ namespace WorkflowManagementSystem.Data
             return item;
         }
 
-        public static void ReplaceUser(string name, User users)
+        public static void ReplaceUser(string password, User users)
         {
             var client = new MongoClient("mongodb://localhost");
             var database = client.GetDatabase("Workflow_Management_System");
             var collection = database.GetCollection<User>("Users");
-            collection.ReplaceOne(x => x.Password == name, users);
+            collection.ReplaceOne(x => x.Password == password, users);
         }
         public static Project ListOfUserProjects(string name)
         {
