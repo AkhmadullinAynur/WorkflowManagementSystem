@@ -1,6 +1,6 @@
 ﻿@page "/warehouseman"
 @inject ProductService productService
-@inject Client client
+@inject UserService client
 
 @if (client.Profession != "Кладовщик" && client.Name != "Admin" && client.Name != null)
 {

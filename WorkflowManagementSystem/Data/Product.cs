@@ -49,5 +49,7 @@ namespace WorkflowManagementSystem.Data
                 MongoDataBase.ReplaceProduct(article, current);
             }
         }
+        [BsonIgnoreIfDefault]
+        public List<Product> newProductList { get; set; }
     }
 }

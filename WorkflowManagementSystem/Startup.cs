@@ -28,10 +28,10 @@ namespace WorkflowManagementSystem
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<UserService>();
-            services.AddSingleton<Project>();
             services.AddSingleton<ProductService>();
-            services.AddSingleton<Client>();
+            services.AddSingleton<Project>();
+            services.AddSingleton<TaskListService>();
+            services.AddSingleton<UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

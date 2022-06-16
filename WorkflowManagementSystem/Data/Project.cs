@@ -67,6 +67,8 @@ namespace WorkflowManagementSystem.Data
 
         [BsonIgnoreIfDefault]
         public List<Project> projects { get; set; }
+        [BsonIgnoreIfDefault]
+        public List<Project> newProjects { get; set; }
 
         public static void AddToProject(Product product, int number)
         {

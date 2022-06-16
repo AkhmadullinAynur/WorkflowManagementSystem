@@ -1,6 +1,6 @@
 ﻿@page "/engineer"
 @inject Project project
-@inject Client client
+@inject UserService client
 
 @if (client.Profession != "Инженер" && client.Name != "Admin" && client.Name != null)
 {

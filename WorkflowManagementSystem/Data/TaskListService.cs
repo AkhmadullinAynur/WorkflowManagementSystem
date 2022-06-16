@@ -7,15 +7,12 @@ using System.Threading.Tasks;
 
 namespace WorkflowManagementSystem.Data
 {
-    public class TaskList
+    public class TaskListService
     {
         [BsonIgnoreIfDefault]
         ObjectId _id;
-        public TaskList(string nameTask)
-        {
-            NameTask = nameTask;
-        }
         public string NameTask { get; set; }
-
+        [BsonIgnoreIfDefault]
+        public List<TaskList> newTaskList { get; set; } = new List<TaskList>();
     }
 }
