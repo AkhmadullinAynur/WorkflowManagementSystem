@@ -69,21 +69,5 @@ namespace WorkflowManagementSystem.Data
         public List<Project> projects { get; set; }
         [BsonIgnoreIfDefault]
         public List<Project> newProjects { get; set; }
-
-        public static void AddToProject(Product product, int number)
-        {
-            var cart = new List<Product>();
-            cart = MongoDataBase.GetComponentList(number);
-            if (cart.Exists(x => x.Article == product.Article))
-            {
-                var current = cart.Find(x => x.Article == product.Article);
-                current.Count += product.Count;
-            }
-            else
-            {
-                cart.Add(product);
-            }
-
-        }
     }
 }

@@ -1,13 +1,12 @@
 ﻿@page "/admin"
 @inject UserService client
-@inject UserService userService
 @inject NavigationManager navigate
 
 <div class="modal-body">
     <table class="table table-responsive-md">
         <THeadComponent Admin="true"></THeadComponent>
         <tbody class="border-bottom border-dark">
-            <TemplateTable Items="userService.listOfUsers">
+            <TemplateTable Items="client.listOfUsers">
                 <ItemTemplate Context="item">
                     @if (item.Active == true)
                     {
@@ -17,8 +16,8 @@
                         <td class="border-right">@item.Email</td>
                         <td class="border-right">@item.PhoneNumber</td>
                         <td>
-                            <button class="btn btn-primary" @onclick="()=>DeleteUser((item.Name).ToString())">Удалить</button>
-                            <button class="btn btn-primary" @onclick="()=>isEditActiv((item.Name).ToString())">Изменить</button>
+                            <button class="btn" title="Изменить" @onclick="()=>isEditActiv((item.Name).ToString())"><img class="img-thumbnail" src="Edit.jpg" height="35" width="35" /></button>
+                            <button class="btn" title="Удалить" @onclick="()=>DeleteUser((item.Name).ToString())"><img class="img-thumbnail" src="Delete.jpg" height="35" width="35" /></button>
                         </td>
                     }
                 </ItemTemplate>
@@ -26,7 +25,7 @@
         </tbody>
         <tr><td colspan="6" class="table-primary text-center"><h3 class="table table-responsive-md font-weight-bolder">Неактивированные пользователи:</h3></td></tr>
         <tbody>
-            <TemplateTable Items="userService.listOfUsers">
+            <TemplateTable Items="client.listOfUsers">
                 <ItemTemplate Context="item">
                     @if (item.Active == false)
                     {
@@ -36,38 +35,84 @@
                         <td class="border-right">@item.Email</td>
                         <td class="border-right">@item.PhoneNumber</td>
                         <td>
-                            <button class="btn btn-primary" @onclick="()=>DeleteUser((item.Name).ToString())">Удалить</button>
-                            <button class="btn btn-primary" @onclick="()=>ActivateUser((item.Name).ToString())">Активировать профиль</button>
+                            <button class="btn" title="Активировать профиль"  @onclick="()=>ActivateUser((item.Name).ToString())"><img class="img-thumbnail" src="Successfully.jpg" height="35" width="35" /></button>
+                            <button class="btn" title="Удалить" @onclick="()=>DeleteUser((item.Name).ToString())"><img class="img-thumbnail" src="Delete.jpg" height="35" width="35" /></button>
                         </td>
                     }
                 </ItemTemplate>
             </TemplateTable>
+            @if (_isRegisterComplete)
+            {
+                <MessageComponent AdminRegisterUser="true" />
+            }
+            @if (_isEditComplete)
+            {
+                <MessageComponent AdminEditUser="true" />
+            }
+            @if (_isNotComplete)
+            {
+                <MessageComponent AdminIsNotComplete="true" />
+            }
         </tbody>
     </table>
     <table class="table table-responsive-md">
-        @if (_isEditActiv)
+        @if (_newRegistartion || _isEditActiv)
         {
-            @foreach (var item in users)
+            @if (_newRegistartion)
             {
-                <Registration _edit="@true" _Registartion="true" Login="@item.Name" Surname="@item.SurName" Profession="@item.Profession" Email="@item.Email" PhoneNumber="@item.PhoneNumber"></Registration>
+                <THeadComponent AdminRegister="true" Login="@client.NewName" Surname="@client.SurName"></THeadComponent>
             }
-        }
-        @if (_newRegistartion)
-        {
-            <Registration _adminRegistartion="true" _Registartion="true"></Registration>
+            else
+            {
+                <THeadComponent AdminEdit="true" Login="@client.NewName" Surname="@client.SurName"></THeadComponent>
+            }
+            <tbody class="table-primary">
+                <tr>
+                    <td><input class="form-control" placeholder="Login" @bind-value="@client.NewName" /></td>
+                    <td><input class="form-control" placeholder="Surname" @bind-value="@client.SurName" /></td>
+                    <td>
+                        <select class="form-control" @onchange="SelectionProfession">
+                            @if (_newRegistartion)
+                            {
+                                <option class="text-center" value="-1>\">Выбрать должность</option>
+                            }
+                            else
+                            {
+                                <option class="text-center" value="-1>\">@client.Profession</option>
+                            }
+                            @foreach (var item in client.professions)
+                            {
+                                <option value="@item.Profession">@item.Profession</option>
+                            }
+                        </select>
+                    </td>
+                    <td><input class="form-control" placeholder="E-mail" @bind-value="@client.Email" /></td>
+                    <td><input class="form-control" placeholder="Phone Number" @bind-value="@client.PhoneNumber" /></td>
+                </tr>
+            </tbody>
         }
         <tfoot class="table-primary">
             <tr>
-                <td colspan="6">
-                    @if (!_newRegistartion && !_isEditActiv)
-                    {
+                @if (!_newRegistartion && !_isEditActiv)
+                {
+                    <td align="left" colspan="5">
                         <button class="btn btn-primary" @onclick="RegistrationActive">Добавить нового пользователя</button>
-                    }
-                    else
-                    {
-                        <button class="btn btn-primary" @onclick="CloseAll">Завершить редактирование</button>
-                    }
-                </td>
+                    </td>
+                }
+                @if (_newRegistartion)
+                {
+                    <td align="right" colspan="5">
+                        <button class="btn btn-primary" @onclick="RegisterUser">Зарегистрировать нового пользователя</button>
+                        <button class="btn btn-primary" @onclick="CloseAll">Отмена</button>
+                    </td>
+                }
+                @if (_isEditActiv)
+                {
+                    <td align="right" colspan="5">
+                        <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
+                        <button class="btn btn-primary" @onclick="CloseAll">Отмена</button>
+                    </td>
+                }
             </tr>
         </tfoot>
     </table>

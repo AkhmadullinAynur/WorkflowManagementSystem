@@ -13,6 +13,8 @@ namespace WorkflowManagementSystem.Data
         ObjectId _id;
         public string NameTask { get; set; }
         [BsonIgnoreIfDefault]
+        public List<TaskList> getTaskLists = MongoDataBase.GetTaskList();
+        [BsonIgnoreIfDefault]
         public List<TaskList> newTaskList { get; set; } = new List<TaskList>();
     }
 }

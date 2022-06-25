@@ -111,7 +111,6 @@ namespace WorkflowManagementSystem.Pages
         {
             var newBuffTasks = typeList.Find(x => x.TypeProduct == args.Value.ToString());
             _typeProduct = newBuffTasks.TypeProduct;
-            //merchandises.Add(new Merchandise(_typeProduct));
             OnInitialized();
         }
         private void DeleteProduct(int article)

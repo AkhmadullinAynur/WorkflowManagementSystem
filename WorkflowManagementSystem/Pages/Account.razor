@@ -4,11 +4,18 @@
 
 <div class="col-md-6 offset-md-3">
     <table class="table table-responsive-md">
-        <thead class="table-primary text-center">
+        <thead class="table-primary text-right">
             <tr>
-                <td colspan="5"><h4 class="table table-responsive-md font-weight-bolder">Личный кабинет</h4></td>
+                <td colspan="2"><h4 class="table table-responsive-md font-weight-bolder">Личный кабинет</h4></td>
+                <td><button class="btn btn-primary" @onclick="Messenger">Сообщения</button></td>
             </tr>
         </thead>
+    </table>
+    @if (_messenger)
+    {
+        <Messenger></Messenger>
+    }
+    <table class="table table-responsive-md">
         <tbody>
             <tr>
                 <th></th>
@@ -20,14 +27,14 @@
                 @if (!_editName)
                 {
                     <td>@client.Name</td>
-                    <td><button class="btn btn-primary" @onclick="EditName">Редактировать</button></td>
+                    <td><button class="btn alert-primary" @onclick="EditName">Редактировать</button></td>
                 }
                 else
                 {
                     <td><input class="form-control" placeholder="Login" @bind-value="@client.Name" /></td>
                     <td>
-                        <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
-                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                        <button class="btn alert-primary" @onclick="EditUser">Внести изменения</button>
+                        <button class="btn alert-primary" @onclick="Cancel">Отмена</button>
                     </td>
                 }
             </tr>
@@ -36,14 +43,14 @@
                 @if (!_editSurName)
                 {
                     <td>@client.SurName</td>
-                    <td><button class="btn btn-primary" @onclick="EditSurName">Редактировать</button></td>
+                    <td><button class="btn alert-primary" @onclick="EditSurName">Редактировать</button></td>
                 }
                 else
                 {
                     <td><input class="form-control" placeholder="Login" @bind-value="@client.SurName" /></td>
                     <td>
-                        <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
-                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                        <button class="btn alert-primary" @onclick="EditUser">Внести изменения</button>
+                        <button class="btn alert-primary" @onclick="Cancel">Отмена</button>
                     </td>
                 }
             </tr>
@@ -52,7 +59,7 @@
                 @if (!_editProfession)
                 {
                     <td>@client.Profession</td>
-                    <td><button class="btn btn-primary" @onclick="EditProfession">Редактировать</button></td>
+                    <td><button class="btn alert-primary" @onclick="EditProfession">Редактировать</button></td>
                 }
                 else
                 {
@@ -66,8 +73,8 @@
                         </select>
                     </td>
                     <td>
-                        <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
-                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                        <button class="btn alert-primary" @onclick="EditUser">Внести изменения</button>
+                        <button class="btn alert-primary" @onclick="Cancel">Отмена</button>
                     </td>
                 }
             </tr>
@@ -76,14 +83,14 @@
                 @if (!_editEmail)
                 {
                     <td>@client.Email</td>
-                    <td><button class="btn btn-primary" @onclick="EditEmail">Редактировать</button></td>
+                    <td><button class="btn alert-primary" @onclick="EditEmail">Редактировать</button></td>
                 }
                 else
                 {
                     <td><input class="form-control" placeholder="Login" @bind-value="@client.Email" /></td>
                     <td>
-                        <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
-                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                        <button class="btn alert-primary" @onclick="EditUser">Внести изменения</button>
+                        <button class="btn alert-primary" @onclick="Cancel">Отмена</button>
                     </td>
                 }
             </tr>
@@ -92,14 +99,14 @@
                 @if (!_editPhonenumber)
                 {
                     <td>@client.PhoneNumber</td>
-                    <td><button class="btn btn-primary" @onclick="EditPhonenumber">Редактировать</button></td>
+                    <td><button class="btn alert-primary" @onclick="EditPhonenumber">Редактировать</button></td>
                 }
                 else
                 {
                     <td><input class="form-control" placeholder="Login" @bind-value="@client.PhoneNumber" /></td>
                     <td>
-                        <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
-                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                        <button class="btn alert-primary" @onclick="EditUser">Внести изменения</button>
+                        <button class="btn alert-primary" @onclick="Cancel">Отмена</button>
                     </td>
                 }
             </tr>
@@ -108,14 +115,14 @@
                 @if (!_editPassword)
                 {
                     <td>@client.Password</td>
-                    <td><button class="btn btn-primary" @onclick="EditPassword">Редактировать</button></td>
+                    <td><button class="btn alert-primary" @onclick="EditPassword">Редактировать</button></td>
                 }
                 else
                 {
                     <td><input class="form-control" placeholder="Login" @bind-value="@client.Password" /></td>
                     <td>
-                        <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
-                        <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                        <button class="btn alert-primary" @onclick="EditUser">Внести изменения</button>
+                        <button class="btn alert-primary" @onclick="Cancel">Отмена</button>
                     </td>
                 }
             </tr>

@@ -2,139 +2,62 @@
 @inject UserService userService
 @inject NavigationManager navigate
 
-@if (_edit)
-{
-    <THeadComponent AdminEdit="true" Login="@Login" Surname="@Surname"></THeadComponent>
-    <tbody class="table-primary">
-        <tr>
-            <td><input class="form-control" placeholder="Login" @bind-value="@Login" /></td>
-            <td><input class="form-control" placeholder="Surname" @bind-value="@Surname" /></td>
-            <td>
-                <select class="form-control" @onchange="SelectionProfession">
-                    <option class="text-center" value="-1>\">Выбрать должность</option>
-                    @foreach (var item in professions)
-                    {
-                        <option value="@item.Profession">@item.Profession</option>
-                    }
-                </select>
-            </td>
-            <td><input class="form-control" placeholder="E-mail" @bind-value="@Email" /></td>
-            <td><input class="form-control" placeholder="Phone Number" @bind-value="@PhoneNumber" /></td>
-            <td>
-                <button class="btn btn-primary" @onclick="EditUser">Внести изменения</button>
-            </td>
-        </tr>
-        @if (_isComplete)
-        {
-            <tr>
-                <td colspan="6" class="alert-success text-center font-weight-bolder"><h2>Изменения успешно внесены!</h2></td>
-            </tr>
-        }
-        @if (_isNotComplete)
-        {
-            <tr>
-                <td colspan="6" class="alert-danger"><h3 class=" text-center font-weight-bolder">Недостаточно данных! Пожалуйста, введите все данные</h3></td>
-            </tr>
-        }
-    </tbody>
-}
-@if (_adminRegistartion)
-{
-    <tbody class="table-primary">
-        <tr>
-            <td colspan="6"><h3 class="table table-responsive-md text-center font-weight-bolder">Добавление нового пользователя</h3></td>
-        </tr>
-        <tr>
-            <td><input class="form-control" placeholder="Login" @bind-value="Login" /></td>
-            <td><input class="form-control" placeholder="Surname" @bind-value="Surname" /></td>
-            <td>
-                <select class="form-control" @onchange="SelectionProfession">
-                    <option class="text-center" value="-1>\">Выбрать должность</option>
-                    @foreach (var item in professions)
-                    {
-                        <option value="@item.Profession">@item.Profession</option>
-                    }
-                </select>
-            </td>
-            <td><input class="form-control" placeholder="E-mail" @bind-value="Email" /></td>
-            <td><input class="form-control" placeholder="Phone Number" @bind-value="PhoneNumber" /></td>
-            <td>
-                <button class="btn btn-primary" @onclick="AdminRegistered">Добавить пользователя</button>
-            </td>
-        </tr>
-        @if (_isComplete)
-        {
-            <tr>
-                <td colspan="6" class="alert-success text-center font-weight-bolder"><h2>Новый пользователь добавлен в базу данных!</h2></td>
-            </tr>
-        }
-        @if (_isNotComplete)
-        {
-            <tr>
-                <td colspan="6" class="alert-danger"><h3 class=" text-center font-weight-bolder">Недостаточно данных! Пожалуйста, введите все данные</h3></td>
-            </tr>
-        }
-    </tbody>
-}
-@if (!_Registartion)
-{
-    <div class="row col-md-6 offset-md-3">
-        <table class="table table-striped">
-            <thead class="table-primary text-center">
-                <tr>
-                    <th><h2 class="font-weight-bolder">Registration</h2></th>
-                </tr>
-            </thead>
-        </table>
-        <EditForm Model="user" OnValidSubmit="NewRegistration" class="table table-responsive-md">
-            <DataAnnotationsValidator />
-            <label></label>
-            <ValidationMessage For="()=>user.Name" />
-            <InputText class="form-control" placeholder="Введите имя" @bind-Value="user.Name" />
-            <label></label>
-            <ValidationMessage For="()=>user.SurName" />
-            <InputText class="form-control" placeholder="Введите фамилию" @bind-Value="user.SurName" />
-            <label></label>
-            <InputSelect class="form-control" @bind-Value="user.Profession">
-                <option class="text-center" value="-1>\">Выбрать должность</option>
-                @foreach (var item in professions)
-                    {
-                    <option value="@item.Profession">@item.Profession</option>
-                    }
-            </InputSelect>
-            <label></label>
-            <ValidationMessage For="()=>user.Email" />
-            <InputText class="form-control" placeholder="Введите электронную почту" @bind-Value="user.Email" />
-            <label></label>
-            <ValidationMessage For="()=>user.PhoneNumber" />
-            <InputText class="form-control" placeholder="Введите номер телефона" @bind-Value="user.PhoneNumber" />
-            <label></label>
-            <ValidationMessage For="()=>user.Password" />
-            <InputText type="password" class="form-control" placeholder="Введите пароль" @bind-Value="user.Password" />
-            <label></label>
-            <table class="table table-responsive-md">
-                <tfoot class="table-primary">
-                    @if (_isNotComplete)
-                    {
-                        <tr>
-                            <td class="alert-danger"><h2>Пожалуйста введите все данные!</h2></td>
-                        </tr>
-                    }
-                    @if (_isComplete)
-                    {
-                        <tr>
-                            <td class="alert-success"><h2>Вы успешно зарегестрировались! Пожалуйста, дождитесь подтверждения вашего аккаунта и авторизуйтесь.</h2></td>
-                        </tr>
-                    }
-                    <tr>
-                        <th>
-                            <button class="btn btn-primary">Зарегестрироваться</button>
-                            <button class="btn btn-primary" @onclick="()=>navigate.NavigateTo(inHome)">Авторизоваться</button>
-                        </th>
-                    </tr>
-                </tfoot>
-            </table>
-        </EditForm>
-    </div>
-}
 
+<div class="row col-md-6 offset-md-3">
+    <table class="table table-striped">
+        <thead class="table-primary text-center">
+            <tr>
+                <th><h2 class="font-weight-bolder">Registration</h2></th>
+            </tr>
+        </thead>
+    </table>
+    <EditForm Model="user" OnValidSubmit="NewRegistration" class="table table-responsive-md">
+        <DataAnnotationsValidator />
+        <label></label>
+        <ValidationMessage For="()=>user.Name" />
+        <InputText class="form-control" placeholder="Введите имя" @bind-Value="user.Name" />
+        <label></label>
+        <ValidationMessage For="()=>user.SurName" />
+        <InputText class="form-control" placeholder="Введите фамилию" @bind-Value="user.SurName" />
+        <label></label>
+        <InputSelect class="form-control" @bind-Value="user.Profession">
+            <option class="text-center" value="-1>\">Выбрать должность</option>
+            @foreach (var item in userService.professions)
+            {
+                <option value="@item.Profession">@item.Profession</option>
+            }
+        </InputSelect>
+        <label></label>
+        <ValidationMessage For="()=>user.Email" />
+        <InputText class="form-control" placeholder="Введите электронную почту" @bind-Value="user.Email" />
+        <label></label>
+        <ValidationMessage For="()=>user.PhoneNumber" />
+        <InputText class="form-control" placeholder="Введите номер телефона" @bind-Value="user.PhoneNumber" />
+        <label></label>
+        <ValidationMessage For="()=>user.Password" />
+        <InputText type="password" class="form-control" placeholder="Введите пароль" @bind-Value="user.Password" />
+        <label></label>
+        <table class="table table-responsive-md">
+            <tfoot class="table-primary">
+                @if (_isNotComplete)
+                {
+                    <tr>
+                        <td class="alert-danger"><h2>Пожалуйста введите все данные!</h2></td>
+                    </tr>
+                }
+                @if (_isComplete)
+                {
+                    <tr>
+                        <td class="alert-success"><h2>Вы успешно зарегестрировались! Пожалуйста, дождитесь подтверждения вашего аккаунта и авторизуйтесь.</h2></td>
+                    </tr>
+                }
+                <tr>
+                    <th>
+                        <button class="btn btn-primary">Зарегестрироваться</button>
+                        <button class="btn btn-primary" @onclick="()=>navigate.NavigateTo(inHome)">Авторизоваться</button>
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </EditForm>
+</div>

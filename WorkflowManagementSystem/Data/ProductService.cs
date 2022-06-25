@@ -24,16 +24,8 @@ namespace WorkflowManagementSystem.Data
         [BsonIgnoreIfDefault]
         public int Count { get; set; }
 
-        //public static void Replace(int article, int count)
-        //{
-        //    var list = MongoDataBase.GetProductList();
-        //    if (list.Exists(x => x.Article == article))
-        //    {
-        //        var current = list.Find(x => x.Article == article);
-        //        current.Quantity = count;
-        //        MongoDataBase.ReplaceProduct(article, current);
-        //    }
-        //}
+        [BsonIgnoreIfDefault]
+        public List<Product> getProductList = MongoDataBase.GetProductList();
         [BsonIgnoreIfDefault]
         public List<Product> newProductList { get; set; } = new List<Product>();
     }

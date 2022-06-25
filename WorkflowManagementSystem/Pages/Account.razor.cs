@@ -12,8 +12,13 @@ namespace WorkflowManagementSystem.Pages
         private bool _editEmail;
         private bool _editPhonenumber;
         private bool _editPassword;
+        private bool _messenger;
         List<User> professions = User.GetListOfProfessions();
 
+        private void Messenger()
+        {
+            _messenger = !_messenger;
+        }
         private void EditName()
         {
             _editName = true;

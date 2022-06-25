@@ -12,12 +12,6 @@ namespace WorkflowManagementSystem.Data
         public ObjectId id { get; set; }
         public List<User> listOfUsers;
 
-        //public void AddToList()
-        //{
-        //    listOfUsers = MongoDataBase.GetUserList();
-        //}
-
-       
         [Required(ErrorMessage = "Необходимо заполнить это поле")]
         public string Name { get; set; }
 
@@ -30,6 +24,7 @@ namespace WorkflowManagementSystem.Data
         public string PhoneNumber { get; set; }
         public bool Active { get; set; }
         public bool Admin { get; set; }
+        public string NewName { get; set; }
         public void GetUserData()
         {
             var client = MongoDataBase.FindUser(Name);
@@ -41,5 +36,6 @@ namespace WorkflowManagementSystem.Data
                 PhoneNumber = item.PhoneNumber;
             }
         }
+        public List<User> professions = User.GetListOfProfessions();
     }
 }

@@ -1,4 +1,21 @@
-﻿
+﻿@if (AdminRegisterUser)
+{
+    <tr>
+        <td colspan="6" class="alert-success text-center font-weight-bolder"><h2>Новый пользователь добавлен в базу данных!</h2></td>
+    </tr>
+}
+@if (AdminEditUser)
+{
+    <tr>
+        <td colspan="6" class="alert-success text-center font-weight-bolder"><h2>Изменения успешно внесены!</h2></td>
+    </tr>
+}
+@if (AdminIsNotComplete)
+{
+    <tr>
+        <td colspan="6" class="alert-danger"><h3 class=" text-center font-weight-bolder">Недостаточно данных! Пожалуйста, введите все данные</h3></td>
+    </tr>
+}
 @if (AddNewProject)
 {
     <tr>
@@ -62,7 +79,39 @@
     </tr>
 }
 
+@if (MessengerNoNewMessage)
+{
+    <tr class="text-center">
+        <td colspan="3"><h4 class="font-weight-bolder">У вас нет новых сообщений</h4></td>
+    </tr>
+}
+
+@if (MessengerNoMessage)
+{
+    <tr class="text-center">
+        <td colspan="3"><h4 class="font-weight-bolder">В папке «@MessengerFolder» нет писем</h4></td>
+    </tr>
+}
+
+@if (MessengerNewMessageComplete)
+{
+    <tr class="text-center">
+        <td colspan="3" class="alert-success"><h4 class="font-weight-bolder">Сообщение отправлено успешно!</h4></td>
+    </tr>
+}
+
+@if (MessengerNewMessageNotComplete)
+{
+    <tr class="text-center">
+        <td colspan="3" class="alert-danger"><h4 class="font-weight-bolder">Ошибка! Пожалуйста, проверьте правильность оформления сообщения</h4></td>
+    </tr>
+}
+
 @code {
+    [Parameter] public bool AdminRegisterUser { get; set; }
+    [Parameter] public bool AdminEditUser { get; set; }
+    [Parameter] public bool AdminIsNotComplete { get; set; }
+
     [Parameter] public bool AddNewProject { get; set; }
     [Parameter] public bool EditProjectComplete { get; set; }
     [Parameter] public bool AddNewTask { get; set; }
@@ -74,6 +123,14 @@
     [Parameter] public bool NewTypeComplete { get; set; }
     [Parameter] public bool EditComplete { get; set; }
 
+    [Parameter] public bool MessengerNoNewMessage { get; set; }
+    [Parameter] public bool MessengerNoMessage { get; set; }
+    [Parameter] public bool MessengerNewMessageComplete { get; set; }
+    [Parameter] public bool MessengerNewMessageNotComplete { get; set; }
+    [Parameter] public string MessengerFolder { get; set; }
+
     [Parameter] public string ProductName { get; set; }
     [Parameter] public int ProductArticle { get; set; }
+
+
 }

@@ -5,8 +5,6 @@ namespace WorkflowManagementSystem.Pages
 {
     public partial class Engineer
     {
-        DateTime dateTime = DateTime.Now;
-
         protected override void OnInitialized()
         {
             project.projects = MongoDataBase.GetProjectList();
@@ -16,13 +14,13 @@ namespace WorkflowManagementSystem.Pages
         {
             string name = client.SurName + " " + client.Name;
             MongoDataBase.PerformerOfWork(number, name);
-            MongoDataBase.StartDate(number, dateTime);
+            MongoDataBase.StartDate(number, DateTime.Now);
             OnInitialized();
         }
         private void FinishBuild(int number)
         {
             MongoDataBase.FinishBuild(number, true);
-            MongoDataBase.FinishDate(number, dateTime);
+            MongoDataBase.FinishDate(number, DateTime.Now);
             OnInitialized();
         }
     }

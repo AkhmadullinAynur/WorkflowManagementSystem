@@ -24,8 +24,8 @@
                         <td class="border-right">@item.Article</td>
                         <td class="border-right">@item.Quantity</td>
                         <td>
-                            <button @onclick="()=>DeleteProduct(item.Article)">Удалить</button>
-                            <button @onclick="()=>EditProductActive(item.Article)">Изменить</button>
+                            <button class="btn" title="Изменить" @onclick="()=>EditProductActive(item.Article)"><img class="img-thumbnail" src="Edit.jpg" height="35" width="35" /></button>
+                            <button class="btn" title="Удалить" @onclick="()=>DeleteProduct(item.Article)"><img class="img-thumbnail" src="Delete.jpg" height="35" width="35" /></button>
                         </td>
                     </ItemTemplate>
                 </TemplateTable>
@@ -86,8 +86,8 @@
                         <td><input class="form-control" placeholder="Введите производителя товара" @bind-value="_manufacturer" /></td>
                         <td><input type="number" class="form-control" placeholder="" @bind-value="_quantity" /></td>
                         <td>
-                            <button class="btn btn-primary" @onclick="AddProduct">Добавить новый товар в базу данных</button>
-                            <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                            <button class="btn btn-success" @onclick="AddProduct">Добавить новый товар в базу данных</button>
+                            <button class="btn btn-danger" @onclick="Cancel">Отмена</button>
                         </td>
                         <td></td>
                     </tr>
@@ -97,8 +97,8 @@
                     <tr>
                         <td><input class="form-control" placeholder="Веедите название" @bind-value="_typeProduct" /></td>
                         <td align="left">
-                            <button class="btn btn-primary" @onclick="AddTypeToDB">Добавить новый тип в базу данных</button>
-                            <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                            <button class="btn btn-success" @onclick="AddTypeToDB">Добавить новый тип в базу данных</button>
+                            <button class="btn btn-danger" @onclick="Cancel">Отмена</button>
                         </td>
                         <td colspan="4"></td>
                     </tr>
@@ -118,18 +118,14 @@
                         </td>
                         <td><input class="form-control" placeholder="Введите производителя товара" @bind-value="_manufacturer" /></td>
                         <td><input type="number" class="form-control" placeholder="" @bind-value="_quantity" /></td>
-                        <td><button class="btn-primary" @onclick="MinusClick">-</button>  @_quantity  <button class="btn-primary" @onclick="PlusClick">+</button></td>
+                        <td><button class="btn" title="Убавить количество" @onclick="MinusClick"><img class="img-thumbnail" src="Minus.jpg" height="35" width="35" /></button>  @_quantity  <button class="btn" title="Прибавить количество" @onclick="PlusClick"><img class="img-thumbnail" src="Plus.jpg" height="35" width="35" /></button></td>
                         <td>
-                            <button class="btn btn-primary" @onclick="ReplaceProduct">Внести изменения</button>
-                            <button class="btn btn-primary" @onclick="Cancel">Отмена</button>
+                            <button class="btn btn-success" @onclick="ReplaceProduct">Внести изменения</button>
+                            <button class="btn btn-danger" @onclick="Cancel">Отмена</button>
                         </td>
                     </tr>
                 }
             </tfoot>
         </table>
     </div>
-}
-
-@code {
-
 }
