@@ -81,16 +81,12 @@
 
 @if (MessengerNoNewMessage)
 {
-    <tr class="text-center">
-        <td colspan="3"><h4 class="font-weight-bolder">У вас нет новых сообщений</h4></td>
-    </tr>
+    <td colspan="3"><h4 class="font-weight-bolder">У вас нет новых сообщений</h4></td>
 }
 
 @if (MessengerNoMessage)
 {
-    <tr class="text-center">
-        <td colspan="3"><h4 class="font-weight-bolder">В папке «@MessengerFolder» нет писем</h4></td>
-    </tr>
+    <td colspan="3"><h4 class="font-weight-bolder">В папке «@MessengerFolder» нет писем</h4></td>
 }
 
 @if (MessengerNewMessageComplete)

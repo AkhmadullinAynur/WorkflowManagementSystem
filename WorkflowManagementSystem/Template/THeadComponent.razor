@@ -184,7 +184,24 @@
         </tr>
     </thead>
 }
-
+@if (MessagesUnread)
+{
+    <tr>
+        <td colspan="3"><h4 class="font-weight-bolder">Новые сообщения:</h4></td>
+    </tr>
+}
+@if (MessagesRead)
+{
+    <tr>
+        <td colspan="3"><h4 class="font-weight-bolder">Прочитанные сообщения:</h4></td>
+    </tr>
+}
+@if (MessagesSent)
+{
+    <tr>
+        <td colspan="3"><h4 class="font-weight-bolder">Отправленные сообщения:</h4></td>
+    </tr>
+}
 @code {
     [Parameter] public bool EditProject { get; set; }
     [Parameter] public bool NewProject { get; set; }
@@ -200,6 +217,10 @@
     [Parameter] public bool Warehouseman { get; set; }
     [Parameter] public bool NotWarehouseman { get; set; }
     [Parameter] public bool WarehousemanPanel { get; set; }
+
+    [Parameter] public bool MessagesUnread { get; set; }
+    [Parameter] public bool MessagesRead { get; set; }
+    [Parameter] public bool MessagesSent { get; set; }
 
     [Parameter] public int Number { get; set; }
     [Parameter] public string Login { get; set; }

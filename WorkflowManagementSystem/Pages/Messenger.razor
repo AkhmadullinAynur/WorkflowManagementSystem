@@ -6,21 +6,15 @@
     <thead class="table-primary text-center">
         @if (!_unreadMessages)
         {
-            <tr>
-                <td colspan="3"><h4 class="font-weight-bolder">Новые сообщения:</h4></td>
-            </tr>
+            <THeadComponent MessagesUnread="true" />
         }
         @if (_readMessages)
         {
-            <tr>
-                <td colspan="3"><h4 class="font-weight-bolder">Прочитанные сообщения:</h4></td>
-            </tr>
+            <THeadComponent MessagesRead="true" />
         }
         @if (_sentMessages)
         {
-            <tr>
-                <td colspan="3"><h4 class="font-weight-bolder">Отправленные сообщения:</h4></td>
-            </tr>
+            <THeadComponent MessagesSent="true" />
         }
         <tr>
             @if (!_unreadMessages || _readMessages)
@@ -39,48 +33,42 @@
     <tbody>
         @if (!_unreadMessages)
         {
-            foreach (var item in unreadMessages)
-            {
-                <tr>
-                    <th class="border-right">@item.Sender</th>
-                    <th class="border-right">@item.Messages</th>
+            <TemplateTable Items="unreadMessages">
+                <ItemTemplate Context="item">
+                    <td class="border-right">@item.Sender</td>
+                    <td class="border-right">@item.Messages</td>
                     <td align="right"><input type="checkbox" title="Отметить как прочитанное" @onchange="() => ReadMessege(item.Id)" /></td>
-                </tr>
-            }
-            if (unreadMessages.Count == 0)
-            {
-                <MessageComponent MessengerNoNewMessage="true" />
-            }
+                </ItemTemplate>
+                <ListEmpty>
+                    <MessageComponent MessengerNoNewMessage="true" />
+                </ListEmpty>
+            </TemplateTable>
         }
         @if (_readMessages)
         {
-            foreach (var item in readMessages)
-            {
-                <tr>
-                    <th class="border-right">@item.Sender</th>
-                    <th class="border-right">@item.Messages</th>
+            <TemplateTable Items="readMessages">
+                <ItemTemplate Context="item">
+                    <td class="border-right">@item.Sender</td>
+                    <td class="border-right">@item.Messages</td>
                     <td align="right"><button class="btn" title="Удалить" @onclick="()=>DeleteMessege(item.Id)"><img class="img-thumbnail" src="Delete.jpg" height="35" width="35" /></button></td>
-                </tr>
-            }
-            if (readMessages.Count == 0)
-            {
-                <MessageComponent MessengerNoMessage="true" MessengerFolder="Прочитанные" />
-            }
+                </ItemTemplate>
+                <ListEmpty>
+                    <MessageComponent MessengerNoMessage="true" MessengerFolder="Прочитанные" />
+                </ListEmpty>
+            </TemplateTable>
         }
         @if (_sentMessages)
         {
-            foreach (var item in sentMessages)
-            {
-                <tr>
-                    <th class="border-right">@item.Recipient</th>
-                    <th class="border-right">@item.Messages</th>
+            <TemplateTable Items="sentMessages">
+                <ItemTemplate Context="item">
+                    <td class="border-right">@item.Recipient</td>
+                    <td class="border-right">@item.Messages</td>
                     <td align="right"><button class="btn" title="Удалить" @onclick="()=>DeleteMessege(item.Id)"><img class="img-thumbnail" src="Delete.jpg" height="35" width="35" /></button></td>
-                </tr>
-            }
-            if (sentMessages.Count == 0)
-            {
-                <MessageComponent MessengerNoMessage="true" MessengerFolder="Отправленные" />
-            }
+                </ItemTemplate>
+                <ListEmpty>
+                    <MessageComponent MessengerNoMessage="true" MessengerFolder="Отправленные" />
+                </ListEmpty>
+            </TemplateTable>
         }
         @if (_newMessage)
         {

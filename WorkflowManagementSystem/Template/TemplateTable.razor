@@ -2,13 +2,17 @@
 
 @if (Items == null)
 {
-    <div class="row">@ListNull</div>
+    <tr class="text-center">
+        @ListNull
+    </tr>
 }
 else
 {
     if (Items.Count == 0)
     {
-        <div class="row">@ListEmpty</div>
+        <tr class="text-center">
+            @ListEmpty
+        </tr>
     }
     else
     {
